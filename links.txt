@@ -1,0 +1,4 @@
+
+http://www.ittc.ku.edu/~niehaus/classes/448-s04/448-standard/simple_gui_examples/
+http://effbot.org/tkinterbook/label.htm
+
