@@ -8,6 +8,10 @@ last modified: December 2010
 website: www.zetcode.com
 """
 
+import time
+import sys
+from subprocess import Popen, PIPE, STDOUT
+
 from Tkinter import Tk, Text, BOTH, W, N, E, S
 from ttk import Frame, Button, Label, Style
 
@@ -27,6 +31,25 @@ class Example(Frame):
       
     	def prox_instruccion():
  		area2.insert("0.0"," que tal como te va")
+		registros()
+
+	def salida(w):
+		a = p.stdout.readline()
+		while not "(gdb)" in a:
+			#sys.stdout.write(a)
+ 			w.insert("0.0",a)
+			# print a
+			a = p.stdout.readline()
+	
+
+	def registros():
+		p.stdin.write('info register\n')
+		salida(area1)
+
+	def listado():
+		p.stdin.write('list 0\n')
+		salida()
+
 
         self.parent.title("Windows")
         self.style = Style()
@@ -75,6 +98,10 @@ class Example(Frame):
         cbtn4 = Button(self, text="Breakpoint")
         cbtn4.grid(row=5, column=1, padx=10, sticky=W)
         
+	p = Popen(['/home/rolo/opt/crossdev/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gdb', 'add'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+	p.stdin.write('target remote 10.0.15.166:4567\n')
+	salida(area3)
+
               
 def salir():
 	quit()
@@ -89,3 +116,19 @@ def main():
 
 if __name__ == '__main__':
     main()  
+
+
+
+
+
+
+
+#registros()
+#time.sleep(2)
+#listado()
+#time.sleep(2)
+#
+#p.stdin.write('run\n')
+#salida()
+#
+#time.sleep(2)
