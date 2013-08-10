@@ -12,7 +12,8 @@ import time
 import sys
 from subprocess import Popen, PIPE, STDOUT
 
-from Tkinter import Tk, Text, BOTH, W, N, E, S
+#from Tkinter import Tk, Text, BOTH, W, N, E, S
+from Tkinter import *
 from ttk import Frame, Button, Label, Style
 
 
@@ -30,20 +31,24 @@ class Example(Frame):
     def initUI(self):
       
     	def prox_instruccion():
- 		area2.insert("0.0"," que tal como te va")
+ 		# area2.insert("0.0"," que tal como te va")
 		registros()
 
 	def salida(w):
+		w.delete("1.0", END)
+		w.insert(END,"\n")
 		a = p.stdout.readline()
 		while not "(gdb)" in a:
 			#sys.stdout.write(a)
- 			w.insert("0.0",a)
+ 			w.insert(END,a)
 			# print a
 			a = p.stdout.readline()
 	
 
 	def registros():
 		p.stdin.write('info register\n')
+		salida(area1)
+		p.stdin.write('\r\n')
 		salida(area1)
 
 	def listado():
@@ -60,7 +65,7 @@ class Example(Frame):
         lbl.grid(row=1,sticky=W, pady=4, padx=5)
         
 
-        area1 = Text(self,height=13,width=80)
+        area1 = Text(self,height=15,width=80)
         area1.grid(row=2, column=0, columnspan=1, rowspan=5, 
             sticky=E+W+S+N)
         
@@ -98,9 +103,11 @@ class Example(Frame):
         cbtn4 = Button(self, text="Breakpoint")
         cbtn4.grid(row=5, column=1, padx=10, sticky=W)
         
-	p = Popen(['/home/rolo/opt/crossdev/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gdb', 'add'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-	p.stdin.write('target remote 10.0.15.166:4567\n')
+	p = Popen(['/home/rafa/openwrt/attitude_adjustment/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gdb', 'add'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+	p.stdin.write('target remote 192.168.1.1:4567\n')
+	p.stdin.write('\n')
 	salida(area3)
+	
 
               
 def salir():
