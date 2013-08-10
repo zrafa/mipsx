@@ -34,10 +34,10 @@ class Example(Frame):
  		# area2.insert("0.0"," que tal como te va")
 		p.stdin.write('next\n')
 		salida(area4)
+		memoria()
 		registros()
 		estado()
 		listado()
-		#memoria()
 
 	def salida(w):
 		w.delete("1.0", END)
@@ -49,11 +49,18 @@ class Example(Frame):
 			a = p.stdout.readline()
 	
 
-	def estado():
-		p.stdin.write('info frame\n')
+	def memoria():
+		p.stdin.write('x/15i $pc\n')
 		salida(area3)
 		p.stdin.write('\r\n')
 		salida(area3)
+
+
+	def estado():
+		p.stdin.write('info frame\n')
+		salida(area4)
+		p.stdin.write('\r\n')
+		salida(area4)
 
 	def registros():
 		p.stdin.write('info register\n')
