@@ -32,11 +32,15 @@ class Example(Frame):
       
     	def prox_instruccion():
  		# area2.insert("0.0"," que tal como te va")
+		p.stdin.write('next\n')
+		salida(area4)
 		registros()
+		estado()
+		listado()
+		#memoria()
 
 	def salida(w):
 		w.delete("1.0", END)
-		w.insert(END,"\n")
 		a = p.stdout.readline()
 		while not "(gdb)" in a:
 			#sys.stdout.write(a)
@@ -44,6 +48,12 @@ class Example(Frame):
 			# print a
 			a = p.stdout.readline()
 	
+
+	def estado():
+		p.stdin.write('info frame\n')
+		salida(area3)
+		p.stdin.write('\r\n')
+		salida(area3)
 
 	def registros():
 		p.stdin.write('info register\n')
@@ -53,7 +63,9 @@ class Example(Frame):
 
 	def listado():
 		p.stdin.write('list 0\n')
-		salida()
+		salida(area2)
+		p.stdin.write('\r\n')
+		salida(area2)
 
 
         self.parent.title("Windows")
@@ -105,8 +117,8 @@ class Example(Frame):
         
 	p = Popen(['/home/rafa/openwrt/attitude_adjustment/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gdb', 'add'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 	p.stdin.write('target remote 192.168.1.1:4567\n')
-	p.stdin.write('\n')
-	salida(area3)
+	#p.stdin.write('\n')
+	salida(area4)
 	
 
               
