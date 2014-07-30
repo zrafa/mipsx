@@ -1,4 +1,7 @@
 
+
+
+
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
@@ -16,6 +19,12 @@ from subprocess import Popen, PIPE, STDOUT
 from Tkinter import *
 from ttk import Frame, Button, Label, Style
 
+# Para el menu FILE
+from tkFileDialog import askopenfilename
+
+# Para extrar el nombre de archivo sin ruta
+import ntpath
+
 
 class Example(Frame):
   
@@ -31,48 +40,54 @@ class Example(Frame):
     def initUI(self):
       
     	def prox_instruccion():
- 		# area2.insert("0.0"," que tal como te va")
 		p.stdin.write('next\n')
-		salida(area4)
+		mostrar_en(area4, "proximo")
+
+
 		memoria()
 		registros()
 		estado()
 		listado()
 
-	def salida(w):
+	def salida(w, findelinea):
 		w.delete("1.0", END)
+				
 		a = p.stdout.readline()
-		while not "(gdb)" in a:
-			#sys.stdout.write(a)
- 			w.insert(END,a)
-			# print a
-			a = p.stdout.readline()
+#		while not "(gdb)" in a:
+		while not findelinea in a:
+			a = a.replace('(gdb) ', '')				
+			w.insert(END,a)		
+			a = p.stdout.readline() 		
+		a = a.replace('(gdb) ', '')				
+		w.insert(END,a)		
 	
+	def mostrar_en(w, findelinea):
+#		salida(w)
+		p.stdin.write(findelinea)
+		p.stdin.write('\r\n')
+		salida(w, findelinea)
+
 
 	def memoria():
-		p.stdin.write('x/15i $pc\n')
-		salida(area3)
-		p.stdin.write('\r\n')
-		salida(area3)
-
+#		p.stdin.write('x/15i $pc\n')
+		p.stdin.write('x/40xw $pc\n')
+		mostrar_en(area3, "memoria")
+	
 
 	def estado():
 		p.stdin.write('info frame\n')
-		salida(area4)
-		p.stdin.write('\r\n')
-		salida(area4)
+		mostrar_en(area4, "estado")
+
 
 	def registros():
 		p.stdin.write('info register\n')
-		salida(area1)
-		p.stdin.write('\r\n')
-		salida(area1)
+		mostrar_en(area1, "registros")
+
 
 	def listado():
-		p.stdin.write('list 0\n')
-		salida(area2)
-		p.stdin.write('\r\n')
-		salida(area2)
+		p.stdin.write('list 1,100\n')
+		mostrar_en(area2, "listado")
+
 
 
         self.parent.title("Windows")
@@ -122,39 +137,73 @@ class Example(Frame):
         cbtn4 = Button(self, text="Breakpoint")
         cbtn4.grid(row=5, column=1, padx=10, sticky=W)
         
-	p = Popen(['/home/rafa/openwrt/attitude_adjustment/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gdb', 'add'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-	p.stdin.write('target remote 192.168.1.1:4567\n')
-	#p.stdin.write('\n')
-	salida(area4)
-	
+#	#p = Popen(['/home/rafa/openwrt/attitude_adjustment/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gdb', 'add'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 
-              
+#	p = Popen(['/home/rafa/programacion/OpenWrt-Toolchain-ar71xx-for-mips_r2-gcc-4.6-linaro_uClibc-0.9.33.2/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-gdb', 'add'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+
+#	p.stdin.write('target remote 192.168.0.71:4567\n')
+#	p.stdin.write('\r\n')
+#	salida(area4)
+
+
 def salir():
+	clave = "root"
+	comando = "killall gdbserver"
+	killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', 'root@192.168.0.71', comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
 	quit()
 
 
 def main():
   
-    root = Tk()
-    app = Example(root)
-    root.mainloop()  
+   	
+    	app = Example(root)
+    
+	# Para el menu FILE
+	menubar = Menu(root)
+	filemenu = Menu(menubar, tearoff=0)
+	filemenu.add_command(label="Abrir", command=openfile)
+	filemenu.add_separator()
+	filemenu.add_command(label="Salir", command=root.quit)
+	menubar.add_cascade(label="Archivo", menu=filemenu)
+	root.config(menu=menubar)
 
+	root.mainloop()  
+
+
+
+
+def openfile():
+
+	filename = askopenfilename(parent=root)
+
+	clave="root"
+	archivo = ntpath.basename(filename)	# Quitamos la ruta y nos quedamos con el nombre del archivo
+
+	copiar = Popen(['sshpass', '-p', clave, 'scp', filename, 'root@192.168.0.71:/tmp'])
+	copiar.wait()
+
+	# Abrimos con gdb el archivo ejecutable	
+	gdbfile = 'file '+filename+' \n'
+	p.stdin.write(gdbfile)
+
+	# Nos conectamos al gdbserver
+	p.stdin.write('target remote 192.168.0.71:4567\n')
+
+	# Iniciamos en el host remoto el gdbserver
+	comando = "gdbserver 0.0.0.0:4567 /tmp/"+archivo
+	gdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', 'root@192.168.0.71', comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+
+
+#	salida(area4)
 
 if __name__ == '__main__':
-    main()  
+	p = Popen(['/home/rafa/programacion/OpenWrt-Toolchain-ar71xx-for-mips_r2-gcc-4.6-linaro_uClibc-0.9.33.2/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-gdb'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+
+	root = Tk()    
+	main()  
 
 
 
 
 
 
-
-#registros()
-#time.sleep(2)
-#listado()
-#time.sleep(2)
-#
-#p.stdin.write('run\n')
-#salida()
-#
-#time.sleep(2)
