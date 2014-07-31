@@ -11,5 +11,6 @@ IP_MIPS=10.0.15.232
 
 ( sshpass -p "root" scp ${1}.elf root@${IP_MIPS}:/tmp 2>&1 ) >> /tmp/archivotemp.txt &&
 
+# (sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "killall gdbserver" 2>&1 & ) >> /tmp/archivotemp.txt &&
 (EJECUTABLE=`basename ${1}.elf`;  echo $EJECUTABLE; sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "gdbserver 0.0.0.0:4567 /tmp/$EJECUTABLE" 2>&1 & ) >> /tmp/archivotemp.txt
 
