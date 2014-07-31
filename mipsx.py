@@ -20,24 +20,27 @@ from Tkinter import *
 from ttk import Frame, Button, Label, Style
 
 # Para el menu FILE
-from tkFileDialog import askopenfilename
+#from tkFileDialog import askopenfilename
 
 # Para extrar el nombre de archivo sin ruta
 import ntpath
 
+from ScrolledText import *
+import tkFileDialog
+import tkMessageBox
 
 class Example(Frame):
   
 
 
-    def __init__(self, parent):
-        Frame.__init__(self, parent)   
+     def __init__(self, parent):
+      	Frame.__init__(self, parent)   
          
-        self.parent = parent
+       	self.parent = parent
         
-        self.initUI()
+   #     self.initUI()
         
-    def initUI(self):
+    #def initUI(self):
       
     	def prox_instruccion():
 		p.stdin.write('next\n')
@@ -67,6 +70,9 @@ class Example(Frame):
 		p.stdin.write('\r\n')
 		salida(w, findelinea)
 
+	def mostrar_en_editor(contenido):
+		area5.delete("1.0", END)
+		area5.insert('1.0',contenido)
 
 	def memoria():
 #		p.stdin.write('x/15i $pc\n')
@@ -96,34 +102,38 @@ class Example(Frame):
         self.pack(fill=BOTH, expand=1)
 
         lbl = Label(self, text="Registros                                      GDB en MIPS - MR3020")
-        lbl.grid(row=1,sticky=W, pady=4, padx=5)
+        lbl.grid(row=1,column=2, sticky=W, pady=4, padx=5)
         
 
         area1 = Text(self,height=15,width=80)
-        area1.grid(row=2, column=0, columnspan=1, rowspan=5, 
+        area1.grid(row=2, column=2, columnspan=1, rowspan=5, 
             sticky=E+W+S+N)
         
         lbl = Label(self, text="Programa en Assembler")
-        lbl.grid(row=7,pady=1, padx=1, sticky=W+N+E+S)
+        lbl.grid(row=7, column=2, pady=1, padx=1, sticky=W+N+E+S)
         
     	area2 = Text(self, height=12,width=80)
-        area2.grid(row=8, column=0, columnspan=1, rowspan=5, 
+        area2.grid(row=8, column=2, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
         lbl = Label(self, text="Memoria")
-        lbl.grid(row=13,pady=1, padx=1, sticky=W+N+E+S)
+        lbl.grid(row=13, column=2, pady=1, padx=1, sticky=W+N+E+S)
 
         area3 = Text(self,height=15,width=80)
-        area3.grid(row=14, column=0, columnspan=1, rowspan=5, 
+        area3.grid(row=14, column=2, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
         lbl4 = Label(self, text="Mensajes de Depuracion")
-        lbl4.grid(row=19,pady=1, padx=1, sticky=W+N+E+S)
+        lbl4.grid(row=19, column=2, pady=1, padx=1, sticky=W+N+E+S)
 
         area4 = Text(self,height=8,width=80)
-        area4.grid(row=20, column=0, columnspan=1, rowspan=5, 
+        area4.grid(row=20, column=2, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
+       
+	area5 = Text(self,height=8,width=80)
+	area5.grid(row=2, column=0, columnspan=1, rowspan=5, 
+            padx=1, sticky=E+W+S+N)
 
         abtn = Button(self, text="SALIR",command=salir)
         abtn.grid(row=2, column=1, padx=10, sticky=W)
@@ -136,14 +146,50 @@ class Example(Frame):
         
         cbtn4 = Button(self, text="Breakpoint")
         cbtn4.grid(row=5, column=1, padx=10, sticky=W)
+
+
+
+
+	def open_command():
+	        file = tkFileDialog.askopenfile(parent=root,mode='rb',title='Select a file')
+	        if file != None:
+	      
+		    contents = file.read()
+	            area5.insert('1.0',contents)
+	            file.close()
+ 
+	def save_command():
+	    file = tkFileDialog.asksaveasfile(mode='w')
+	    if file != None:
+	    # slice off the last character from get, as an extra return is added
+	        data = self.area5.get('1.0', END+'-1c')
+	        file.write(data)
+	        file.close()
+         
+	def exit_command():
+	    if tkMessageBox.askokcancel("Quit", "Do you really want to quit?"):
+	        root.destroy()
+	 
+	def about_command():
+	    label = tkMessageBox.showinfo("About", "Just Another TextPad \n Copyright \n No rights left to reserve")
+		         
+ 
+	def dummy():
+	    print "I am a Dummy Command, I will be removed in the next step"
+	menu = Menu(root)
+	root.config(menu=menu)
+	filemenu = Menu(menu)
+	menu.add_cascade(label="File", menu=filemenu)
+	filemenu.add_command(label="New", command=dummy)
+	filemenu.add_command(label="Open...", command=open_command)
+	filemenu.add_command(label="Save", command=save_command)
+	filemenu.add_separator()
+	filemenu.add_command(label="Exit", command=exit_command)
+	helpmenu = Menu(menu)
+	menu.add_cascade(label="Help", menu=helpmenu)
+	helpmenu.add_command(label="About...", command=about_command)
+ 
         
-#	#p = Popen(['/home/rafa/openwrt/attitude_adjustment/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gdb', 'add'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-
-#	p = Popen(['/home/rafa/programacion/OpenWrt-Toolchain-ar71xx-for-mips_r2-gcc-4.6-linaro_uClibc-0.9.33.2/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-gdb', 'add'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-
-#	p.stdin.write('target remote 192.168.0.71:4567\n')
-#	p.stdin.write('\r\n')
-#	salida(area4)
 
 
 def salir():
@@ -153,19 +199,53 @@ def salir():
 	quit()
 
 
+
+# Para el editor
+def abrirarchivo():
+
+        file = askopenfilename(parent=root)
+        if file != None:
+	        f = open(file, "r")
+	        contents = f.read()
+        
+		# contents = file.read()
+		app.mostrar_en_editor(contents)
+#		app.area5.delete("1.0", END)
+#		app.area5.insert('1.0',contents)
+		f.close()	
+ 
+def guardararchivo(self):
+    file = tkFileDialog.asksaveasfile(mode='w')
+    if file != None:
+    # slice off the last character from get, as an extra return is added
+        data = app.area5.get('1.0', END+'-1c')
+        file.write(data)
+        file.close()
+
+def nuevoarchivo():
+    print "I am a Dummy Command, I will be removed in the next step"         
+ 
+def acercade():
+    label = tkMessageBox.showinfo("About", "Just Another TextPad \n Copyright \n No rights left to reserve")
+
+
 def main():
   
    	
-    	app = Example(root)
+#    	app = Example(root)
     
 	# Para el menu FILE
-	menubar = Menu(root)
-	filemenu = Menu(menubar, tearoff=0)
-	filemenu.add_command(label="Abrir", command=openfile)
-	filemenu.add_separator()
-	filemenu.add_command(label="Salir", command=root.quit)
-	menubar.add_cascade(label="Archivo", menu=filemenu)
-	root.config(menu=menubar)
+	
+#	menubar = Menu(root)
+#	filemenu = Menu(menubar, tearoff=0)
+#	filemenu.add_command(label="Nuevo", command=nuevoarchivo)
+#	filemenu.add_separator()
+#	filemenu.add_command(label="Acerca de", command=acercade)
+#	filemenu.add_separator()
+#	filemenu.add_command(label="Salir", command=root.quit)
+
+#	menubar.add_cascade(label="Archivo", menu=filemenu)
+#	root.config(menu=menubar)
 
 	root.mainloop()  
 
@@ -193,13 +273,15 @@ def openfile():
 	comando = "gdbserver 0.0.0.0:4567 /tmp/"+archivo
 	gdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', 'root@192.168.0.71', comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 
-
+	app.mostrar_en(app.area4,"estado")
 #	salida(area4)
 
 if __name__ == '__main__':
 	p = Popen(['/home/rafa/programacion/OpenWrt-Toolchain-ar71xx-for-mips_r2-gcc-4.6-linaro_uClibc-0.9.33.2/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-gdb'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 
 	root = Tk()    
+
+    	app = Example(root)
 	main()  
 
 
