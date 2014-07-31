@@ -74,7 +74,7 @@ class Example(Frame):
 		
      		file = open("/tmp/archivotemp.txt")
 	        contents = file.read()
-		area4.delete('1.0',END)
+		#area4.delete('1.0',END)
 		area4.insert('1.0',contents)
 		file.close()
 
@@ -101,15 +101,19 @@ class Example(Frame):
 		mostrar_en(area2, "listado")
 
 	def compilarycargar():
-		
-		tub = Popen(['./compilarycargar.sh', archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		print self.archivoactual
+		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		mostrar_en_depuracion()
 		if tub.returncode == 0:
 			area4.insert(END, "Compilacion y carga : OK")
+
 			# Abrimos con gdb el archivo ejecutable
-			ejecutable = archivoactual+".o"
+			ejecutable = self.archivoactual+".elf"
 			gdbfile = 'file '+ejecutable+' \n'
+			p.stdin.write(gdbfile)
+			# Respondemos "y"es a recargar			
+			gdbfile = 'y '+ejecutable+' \n'
 			p.stdin.write(gdbfile)
 
 			# Nos conectamos al gdbserver
@@ -117,6 +121,7 @@ class Example(Frame):
 			mostrar_en(area4,"estado")
 		else:
 			area4.insert(END, "ERROR al compilar y cargar")
+			mostrar_en_depuracion()
 
 	def cargar():
 			mostrar_en_depuracion()
@@ -198,6 +203,8 @@ class Example(Frame):
 		    area5.delete('1.0',END)
 	            area5.insert('1.0',contents)
 	            file.close()
+	            self.archivoactual = file.name
+		    print self.archivoactual
  
 	def save_command():
 	    file = tkFileDialog.asksaveasfile(mode='w')
@@ -206,6 +213,8 @@ class Example(Frame):
 	        data = area5.get('1.0', END+'-1c')
 	        file.write(data)
 	        file.close()
+		self.archivoactual = file.name
+                print self.archivoactual
          
 	def exit_command():
 	    if tkMessageBox.askokcancel("Quit", "Do you really want to quit?"):
