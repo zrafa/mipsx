@@ -70,9 +70,15 @@ class Example(Frame):
 		p.stdin.write('\r\n')
 		salida(w, findelinea)
 
-	def mostrar_en_editor(contenido):
-		area5.delete("1.0", END)
-		area5.insert('1.0',contenido)
+	def mostrar_en_depuracion():
+		
+     		file = open("/tmp/archivotemp.txt")
+	        contents = file.read()
+		area4.delete('1.0',END)
+		area4.insert('1.0',contents)
+		file.close()
+
+		
 
 	def memoria():
 #		p.stdin.write('x/15i $pc\n')
@@ -94,6 +100,21 @@ class Example(Frame):
 		p.stdin.write('list 1,100\n')
 		mostrar_en(area2, "listado")
 
+	def compilarycargar():
+		
+		tub = Popen(['./compilarycargar.sh', archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		streamdata = tub.communicate()[0]
+		mostrar_en_depuracion()
+#		if tub.returncode == 0:
+#			area4.insert(END, "Compilacion OK")
+
+	def cargar():
+			mostrar_en_depuracion()
+#		else:
+#			p.stdin.write('file a.out \n')
+#			# Nos conectamos al gdbserver
+#			p.stdin.write('target remote 192.168.0.71:4567\n')
+#			mostrar_en(area4, "estado")
 
 
         self.parent.title("Windows")
@@ -124,15 +145,17 @@ class Example(Frame):
             padx=1, sticky=E+W+S+N)
 
         lbl4 = Label(self, text="Mensajes de Depuracion")
-        lbl4.grid(row=19, column=2, pady=1, padx=1, sticky=W+N+E+S)
+        lbl4.grid(row=13, column=0, pady=1, padx=1, sticky=W+N+E+S)
 
         area4 = Text(self,height=8,width=80)
-        area4.grid(row=20, column=2, columnspan=1, rowspan=5, 
+        area4.grid(row=14, column=0, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
-       
-	area5 = Text(self,height=8,width=80)
-	area5.grid(row=2, column=0, columnspan=1, rowspan=5, 
+        lbl = Label(self, text="Editor del Programa")
+        lbl.grid(row=1,column=0, sticky=W, pady=4, padx=5) 
+     
+	area5 = ScrolledText(self,height=29,width=80)
+	area5.grid(row=2, column=0, columnspan=1, rowspan=10, 
             padx=1, sticky=E+W+S+N)
 
         abtn = Button(self, text="SALIR",command=salir)
@@ -147,14 +170,22 @@ class Example(Frame):
         cbtn4 = Button(self, text="Breakpoint")
         cbtn4.grid(row=5, column=1, padx=10, sticky=W)
 
+        cbtn5 = Button(self, text="Compilar y Cargar", command=compilarycargar)
+        cbtn5.grid(row=6, column=1, padx=10, sticky=W)
 
+#        cbtn6 = Button(self, text="Cargar", command=cargar)
+#        cbtn6.grid(row=6, column=1, padx=10, sticky=W)
 
+	archivoactual = "hello.s"
+	archivotemp = "/tmp/archivotemp.txt"
+	
 
 	def open_command():
 	        file = tkFileDialog.askopenfile(parent=root,mode='rb',title='Select a file')
 	        if file != None:
 	      
 		    contents = file.read()
+		    area5.delete('1.0',END)
 	            area5.insert('1.0',contents)
 	            file.close()
  
@@ -162,7 +193,7 @@ class Example(Frame):
 	    file = tkFileDialog.asksaveasfile(mode='w')
 	    if file != None:
 	    # slice off the last character from get, as an extra return is added
-	        data = self.area5.get('1.0', END+'-1c')
+	        data = area5.get('1.0', END+'-1c')
 	        file.write(data)
 	        file.close()
          
@@ -171,7 +202,7 @@ class Example(Frame):
 	        root.destroy()
 	 
 	def about_command():
-	    label = tkMessageBox.showinfo("About", "Just Another TextPad \n Copyright \n No rights left to reserve")
+	    label = tkMessageBox.showinfo("Acerca de", "Copyright 2014 Rafael Ignacio Zurita\n\nFacultad de Informatica\nUniversidad Nacional del Comahue\n\nThis program is free software; you can redistribute it and/or modify it under the terms of the GPL v2")
 		         
  
 	def dummy():
@@ -179,15 +210,15 @@ class Example(Frame):
 	menu = Menu(root)
 	root.config(menu=menu)
 	filemenu = Menu(menu)
-	menu.add_cascade(label="File", menu=filemenu)
-	filemenu.add_command(label="New", command=dummy)
-	filemenu.add_command(label="Open...", command=open_command)
-	filemenu.add_command(label="Save", command=save_command)
+	menu.add_cascade(label="Archivo", menu=filemenu)
+	filemenu.add_command(label="Nuevo", command=dummy)
+	filemenu.add_command(label="Abrir...", command=open_command)
+	filemenu.add_command(label="Guardar...", command=save_command)
 	filemenu.add_separator()
-	filemenu.add_command(label="Exit", command=exit_command)
+	filemenu.add_command(label="Salir", command=salir)
 	helpmenu = Menu(menu)
-	menu.add_cascade(label="Help", menu=helpmenu)
-	helpmenu.add_command(label="About...", command=about_command)
+	menu.add_cascade(label="Ayuda", menu=helpmenu)
+	helpmenu.add_command(label="Acerca de...", command=about_command)
  
         
 
