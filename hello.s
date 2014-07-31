@@ -1,3 +1,5 @@
+# Hello Wolrd en MIPS
+#
 # assemble: as --gstabs
 
         .data
