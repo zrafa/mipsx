@@ -6,9 +6,10 @@
 # -*- coding: utf-8 -*-
 
 """
-Autor original: Jan Bodnar
+Autor original del ejemplo de una aplicacion Tk: Jan Bodnar
 last modified: December 2010
 website: www.zetcode.com
+Modificado y ampliado para ser una GUI de GDB para MIPS. Por Rafael Ignacio Zurita
 """
 
 import time
@@ -117,7 +118,10 @@ class Example(Frame):
 			p.stdin.write(gdbfile)
 
 			# Nos conectamos al gdbserver
-			p.stdin.write('target remote 192.168.0.71:4567\n')
+			ip_mips="10.0.15.232"
+			comando='target remote '+ip_mips+':4567\n'
+			p.stdin.write(comando)
+			#'target remote 192.168.0.71:4567\n')
 			mostrar_en(area4,"estado")
 		else:
 			area4.insert(END, "ERROR al compilar y cargar")
@@ -193,18 +197,27 @@ class Example(Frame):
 
 	archivoactual = "hello.s"
 	archivotemp = "/tmp/archivotemp.txt"
-	
+	ip_mips = "10.0.15.232"
+
+	def abrir_en_editor(archivo):
+		fd = open(archivo)      
+		contents = fd.read()
+		area5.delete('1.0',END)
+	        area5.insert('1.0',contents)
+	        fd.close()
+	        self.archivoactual = archivo
+		print self.archivoactual
 
 	def open_command():
 	        file = tkFileDialog.askopenfile(parent=root,mode='rb',title='Select a file')
 	        if file != None:
-	      
-		    contents = file.read()
-		    area5.delete('1.0',END)
-	            area5.insert('1.0',contents)
-	            file.close()
-	            self.archivoactual = file.name
-		    print self.archivoactual
+			abrir_en_editor(file.name)	      
+#		    contents = file.read()
+#		    area5.delete('1.0',END)
+#	            area5.insert('1.0',contents)
+#	            file.close()
+#	            self.archivoactual = file.name
+#		    print self.archivoactual
  
 	def save_command():
 	    file = tkFileDialog.asksaveasfile(mode='w')
@@ -238,14 +251,15 @@ class Example(Frame):
 	helpmenu = Menu(menu)
 	menu.add_cascade(label="Ayuda", menu=helpmenu)
 	helpmenu.add_command(label="Acerca de...", command=about_command)
- 
+ 	abrir_en_editor("hello.s")
         
 
 
 def salir():
 	clave = "root"
 	comando = "killall gdbserver"
-	killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', 'root@192.168.0.71', comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
+	ip_mips = "10.0.15.232"
+	killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
 	quit()
 
 
@@ -327,7 +341,7 @@ def openfile():
 #	salida(area4)
 
 if __name__ == '__main__':
-	p = Popen(['/home/rafa/programacion/OpenWrt-Toolchain-ar71xx-for-mips_r2-gcc-4.6-linaro_uClibc-0.9.33.2/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-gdb'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+	p = Popen(['gdb-multiarch'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 
 	root = Tk()    
 
