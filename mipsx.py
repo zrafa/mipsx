@@ -105,8 +105,18 @@ class Example(Frame):
 		tub = Popen(['./compilarycargar.sh', archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		mostrar_en_depuracion()
-#		if tub.returncode == 0:
-#			area4.insert(END, "Compilacion OK")
+		if tub.returncode == 0:
+			area4.insert(END, "Compilacion y carga : OK")
+			# Abrimos con gdb el archivo ejecutable
+			ejecutable = archivoactual+".o"
+			gdbfile = 'file '+ejecutable+' \n'
+			p.stdin.write(gdbfile)
+
+			# Nos conectamos al gdbserver
+			p.stdin.write('target remote 192.168.0.71:4567\n')
+			mostrar_en(area4,"estado")
+		else:
+			area4.insert(END, "ERROR al compilar y cargar")
 
 	def cargar():
 			mostrar_en_depuracion()

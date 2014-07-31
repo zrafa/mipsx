@@ -1,6 +1,6 @@
 #!/bin/bash
 
-( /home/rafa/programacion/OpenWrt-Toolchain-ar71xx-for-mips_r2-gcc-4.6-linaro_uClibc-0.9.33.2/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-as $1 -o ${1}.o && 
+( /home/rafa/programacion/OpenWrt-Toolchain-ar71xx-for-mips_r2-gcc-4.6-linaro_uClibc-0.9.33.2/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-as -g --gstabs $1 -o ${1}.o && 
 
 /home/rafa/programacion/OpenWrt-Toolchain-ar71xx-for-mips_r2-gcc-4.6-linaro_uClibc-0.9.33.2/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-uclibc-ld -static -o ${1}.elf ${1}.o && 2>&1 ) > /tmp/archivotemp.txt  &&
 
