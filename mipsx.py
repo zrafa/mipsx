@@ -74,7 +74,7 @@ class Example(Frame):
 		
      		file = open("/tmp/archivotemp.txt")
 	        contents = file.read()
-		#area4.delete('1.0',END)
+		area4.delete('1.0',END)
 		area4.insert('1.0',contents)
 		file.close()
 
