@@ -1,4 +1,4 @@
-# Hello Wolrd en MIPS
+# Hello World en MIPS
 #
 # assemble: as --gstabs
 
@@ -8,8 +8,8 @@
 
 __start:
         li      $t1, 1
-        li      $t2, 1
-        add     $t0, $t1, $t2
+        li      $t3, 1
+        add     $t0, $t1, $t3
 
 # retorna al SO
         li      $4, 88
