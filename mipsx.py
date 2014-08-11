@@ -136,7 +136,7 @@ class Example(Frame):
 #			mostrar_en(area4, "estado")
 
 
-        self.parent.title("Windows")
+        self.parent.title("Mipsx - GUI for gdb multiarch anti spim :) ")
         self.style = Style()
         self.style.theme_use("default")
         self.pack(fill=BOTH, expand=1)
@@ -234,7 +234,7 @@ class Example(Frame):
 	        root.destroy()
 	 
 	def about_command():
-	    label = tkMessageBox.showinfo("Acerca de", "Copyright 2014 Rafael Ignacio Zurita\n\nFacultad de Informatica\nUniversidad Nacional del Comahue\n\nThis program is free software; you can redistribute it and/or modify it under the terms of the GPL v2")
+	    label = tkMessageBox.showinfo("Acerca de", "MIPSX - GUI for gdb multiarch anti spim :)\n\nEntorno de desarrollo en lenguaje assembler arquitectura MIPS\nEste programa ensabla, genera el programa ejecutable, y lo ejecuta en modo debug en una maquina MIPS real\n\nCopyright 2014 Rafael Ignacio Zurita\n\nFacultad de Informatica\nUniversidad Nacional del Comahue\n\nThis program is free software; you can redistribute it and/or modify it under the terms of the GPL v2")
 		         
  
 	def dummy():
