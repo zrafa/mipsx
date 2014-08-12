@@ -1,7 +1,5 @@
 
 
-
-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
@@ -30,7 +28,7 @@ from ScrolledText import *
 import tkFileDialog
 import tkMessageBox
 
-class Example(Frame):
+class Mipsx(Frame):
   
 
 
@@ -118,10 +116,10 @@ class Example(Frame):
 			p.stdin.write(gdbfile)
 
 			# Nos conectamos al gdbserver
-			ip_mips="10.0.15.232"
+			# ip_mips="10.0.15.232"
+			ip_mips="192.168.0.71"
 			comando='target remote '+ip_mips+':4567\n'
 			p.stdin.write(comando)
-			#'target remote 192.168.0.71:4567\n')
 			mostrar_en(area4,"estado")
 		else:
 			area4.insert(END, "ERROR al compilar y cargar")
@@ -145,14 +143,14 @@ class Example(Frame):
         lbl.grid(row=1,column=2, sticky=W, pady=4, padx=5)
         
 
-        area1 = Text(self,height=15,width=80)
+        area1 = Text(self,height=12,width=80)
         area1.grid(row=2, column=2, columnspan=1, rowspan=5, 
             sticky=E+W+S+N)
         
         lbl = Label(self, text="Programa en Assembler")
         lbl.grid(row=7, column=2, pady=1, padx=1, sticky=W+N+E+S)
         
-    	area2 = Text(self, height=12,width=80)
+    	area2 = Text(self, height=6,width=80)
         area2.grid(row=8, column=2, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
@@ -166,31 +164,31 @@ class Example(Frame):
         lbl4 = Label(self, text="Mensajes de Depuracion")
         lbl4.grid(row=13, column=0, pady=1, padx=1, sticky=W+N+E+S)
 
-        area4 = Text(self,height=8,width=80)
+        area4 = Text(self,height=8,width=60)
         area4.grid(row=14, column=0, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
         lbl = Label(self, text="Editor del Programa")
         lbl.grid(row=1,column=0, sticky=W, pady=4, padx=5) 
      
-	area5 = ScrolledText(self,height=29,width=80)
+	area5 = ScrolledText(self,height=20,width=60)
 	area5.grid(row=2, column=0, columnspan=1, rowspan=10, 
             padx=1, sticky=E+W+S+N)
 
-        abtn = Button(self, text="SALIR",command=salir)
-        abtn.grid(row=2, column=1, padx=10, sticky=W)
+#        abtn = Button(self, text="SALIR",command=salir)
+#        abtn.grid(row=2, column=1, padx=10, sticky=W)
 
-        cbtn = Button(self, text="Run")
-        cbtn.grid(row=3, column=1, padx=10, sticky=W)
+#        cbtn = Button(self, text="Run")
+#        cbtn.grid(row=3, column=1, padx=10, sticky=W)
         
-        cbtn3 = Button(self, text="Next", command=prox_instruccion)
-        cbtn3.grid(row=4, column=1, padx=10, sticky=W)
+#        cbtn3 = Button(self, text="Next", command=prox_instruccion)
+#        cbtn3.grid(row=4, column=1, padx=10, sticky=W)
         
-        cbtn4 = Button(self, text="Breakpoint")
-        cbtn4.grid(row=5, column=1, padx=10, sticky=W)
+#        cbtn4 = Button(self, text="Breakpoint")
+#        cbtn4.grid(row=5, column=1, padx=10, sticky=W)
 
-        cbtn5 = Button(self, text="Compilar y Cargar", command=compilarycargar)
-        cbtn5.grid(row=6, column=1, padx=10, sticky=W)
+#        cbtn5 = Button(self, text="Compilar y Cargar", command=compilarycargar)
+#        cbtn5.grid(row=6, column=1, padx=10, sticky=W)
 
 #        cbtn6 = Button(self, text="Cargar", command=cargar)
 #        cbtn6.grid(row=6, column=1, padx=10, sticky=W)
@@ -248,9 +246,17 @@ class Example(Frame):
 	filemenu.add_command(label="Guardar...", command=save_command)
 	filemenu.add_separator()
 	filemenu.add_command(label="Salir", command=salir)
+
+
+	menu.add_command(label="Run", command=salir)
+	menu.add_command(label="Next", command=prox_instruccion)
+	menu.add_command(label="Breakpoint", command=salir)
+	menu.add_command(label="Compilar y Cargar", command=compilarycargar)
+
 	helpmenu = Menu(menu)
 	menu.add_cascade(label="Ayuda", menu=helpmenu)
 	helpmenu.add_command(label="Acerca de...", command=about_command)
+	menu.add_command(label="Salir", command=salir)
  	abrir_en_editor("hello.s")
         
 
@@ -264,88 +270,23 @@ def salir():
 
 
 
-# Para el editor
-def abrirarchivo():
-
-        file = askopenfilename(parent=root)
-        if file != None:
-	        f = open(file, "r")
-	        contents = f.read()
-        
-		# contents = file.read()
-		app.mostrar_en_editor(contents)
-#		app.area5.delete("1.0", END)
-#		app.area5.insert('1.0',contents)
-		f.close()	
  
-def guardararchivo(self):
-    file = tkFileDialog.asksaveasfile(mode='w')
-    if file != None:
-    # slice off the last character from get, as an extra return is added
-        data = app.area5.get('1.0', END+'-1c')
-        file.write(data)
-        file.close()
-
-def nuevoarchivo():
-    print "I am a Dummy Command, I will be removed in the next step"         
  
-def acercade():
-    label = tkMessageBox.showinfo("About", "Just Another TextPad \n Copyright \n No rights left to reserve")
-
 
 def main():
   
-   	
-#    	app = Example(root)
-    
-	# Para el menu FILE
-	
-#	menubar = Menu(root)
-#	filemenu = Menu(menubar, tearoff=0)
-#	filemenu.add_command(label="Nuevo", command=nuevoarchivo)
-#	filemenu.add_separator()
-#	filemenu.add_command(label="Acerca de", command=acercade)
-#	filemenu.add_separator()
-#	filemenu.add_command(label="Salir", command=root.quit)
-
-#	menubar.add_cascade(label="Archivo", menu=filemenu)
-#	root.config(menu=menubar)
-
 	root.mainloop()  
 
 
 
 
-def openfile():
-
-	filename = askopenfilename(parent=root)
-
-	clave="root"
-	archivo = ntpath.basename(filename)	# Quitamos la ruta y nos quedamos con el nombre del archivo
-
-	copiar = Popen(['sshpass', '-p', clave, 'scp', filename, 'root@192.168.0.71:/tmp'])
-	copiar.wait()
-
-	# Abrimos con gdb el archivo ejecutable	
-	gdbfile = 'file '+filename+' \n'
-	p.stdin.write(gdbfile)
-
-	# Nos conectamos al gdbserver
-	p.stdin.write('target remote 192.168.0.71:4567\n')
-
-	# Iniciamos en el host remoto el gdbserver
-	comando = "gdbserver 0.0.0.0:4567 /tmp/"+archivo
-	gdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', 'root@192.168.0.71', comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-
-	app.mostrar_en(app.area4,"estado")
-#	salida(area4)
 
 if __name__ == '__main__':
 	p = Popen(['gdb-multiarch'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 
 	root = Tk()    
 
-    	app = Example(root)
+    	app = Mipsx(root)
 	main()  
 
 
