@@ -88,6 +88,16 @@ class Mipsx(Frame):
 	def estado():
 		p.stdin.write('info frame\n')
 		mostrar_en(area4, "estado")
+     		file = open("/tmp/archivotemp.txt")
+	        contents = file.readline()
+		while not "Remote" in contents:
+			area4.insert(END,contents)
+	        	contents = file.readline()
+		contents = file.readline()
+		file.close()
+
+		area4.insert(END,"Salida Estandar : \n")
+		area4.insert(END,contents)
 
 
 	def registros():
@@ -102,6 +112,7 @@ class Mipsx(Frame):
 	def compilarycargar():
 		area4.delete('1.0',END)
 		area4.insert('1.0',"Compilando y Cargando\r\n")
+		root.update_idletasks()
 		print self.archivoactual
 		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
@@ -119,7 +130,8 @@ class Mipsx(Frame):
 
 			# Nos conectamos al gdbserver
 			# ip_mips="10.0.15.232"
-			ip_mips="192.168.0.71"
+			# ip_mips="192.168.0.71"
+			ip_mips="10.0.15.50"
 			comando='target remote '+ip_mips+':4567\n'
 			p.stdin.write(comando)
 			mostrar_en(area4,"estado")
@@ -179,7 +191,8 @@ class Mipsx(Frame):
 
 	archivoactual = "hello.s"
 	archivotemp = "/tmp/archivotemp.txt"
-	ip_mips = "10.0.15.232"
+	# ip_mips = "10.0.15.232"
+	ip_mips = "10.0.15.50"
 
 	def abrir_en_editor(archivo):
 		fd = open(archivo)      
@@ -248,7 +261,8 @@ class Mipsx(Frame):
 def salir():
 	clave = "root"
 	comando = "killall gdbserver"
-	ip_mips = "10.0.15.232"
+	# ip_mips = "10.0.15.232"
+	ip_mips = "10.0.15.50"
 	killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
 	quit()
 
