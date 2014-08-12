@@ -73,8 +73,8 @@ class Mipsx(Frame):
 		
      		file = open("/tmp/archivotemp.txt")
 	        contents = file.read()
-		area4.delete('1.0',END)
-		area4.insert('1.0',contents)
+		#area4.delete('1.0',END)
+		area4.insert(END,contents)
 		file.close()
 
 		
@@ -100,12 +100,14 @@ class Mipsx(Frame):
 		mostrar_en(area2, "listado")
 
 	def compilarycargar():
+		area4.delete('1.0',END)
+		area4.insert('1.0',"Compilando y Cargando\r\n")
 		print self.archivoactual
 		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		mostrar_en_depuracion()
 		if tub.returncode == 0:
-			area4.insert(END, "Compilacion y carga : OK")
+			area4.insert(END, "Compilacion y carga : OK\n")
 
 			# Abrimos con gdb el archivo ejecutable
 			ejecutable = self.archivoactual+".elf"
@@ -125,13 +127,6 @@ class Mipsx(Frame):
 			area4.insert(END, "ERROR al compilar y cargar")
 			mostrar_en_depuracion()
 
-	def cargar():
-			mostrar_en_depuracion()
-#		else:
-#			p.stdin.write('file a.out \n')
-#			# Nos conectamos al gdbserver
-#			p.stdin.write('target remote 192.168.0.71:4567\n')
-#			mostrar_en(area4, "estado")
 
 
         self.parent.title("Mipsx - GUI for gdb multiarch anti spim :) ")
@@ -175,23 +170,6 @@ class Mipsx(Frame):
 	area5.grid(row=2, column=0, columnspan=1, rowspan=10, 
             padx=1, sticky=E+W+S+N)
 
-#        abtn = Button(self, text="SALIR",command=salir)
-#        abtn.grid(row=2, column=1, padx=10, sticky=W)
-
-#        cbtn = Button(self, text="Run")
-#        cbtn.grid(row=3, column=1, padx=10, sticky=W)
-        
-#        cbtn3 = Button(self, text="Next", command=prox_instruccion)
-#        cbtn3.grid(row=4, column=1, padx=10, sticky=W)
-        
-#        cbtn4 = Button(self, text="Breakpoint")
-#        cbtn4.grid(row=5, column=1, padx=10, sticky=W)
-
-#        cbtn5 = Button(self, text="Compilar y Cargar", command=compilarycargar)
-#        cbtn5.grid(row=6, column=1, padx=10, sticky=W)
-
-#        cbtn6 = Button(self, text="Cargar", command=cargar)
-#        cbtn6.grid(row=6, column=1, padx=10, sticky=W)
 
 	archivoactual = "hello.s"
 	archivotemp = "/tmp/archivotemp.txt"
