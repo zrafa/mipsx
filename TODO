@@ -1,7 +1,7 @@
 
 hacer un nro random mayor a 4000. Que compile el binario con nombre ejecutable random, y lo ejecute en el puerto random. Al finalizar matar el gdbserver random.
 
-hacer la salida estandar . tal vez mostrando /tmp/archivotemp
+HECHO, hacer la salida estandar . tal vez mostrando /tmp/archivotemp
 
 
 Fijarse si la memoria para .data es siempre la misma
@@ -11,6 +11,6 @@ Cuando compila poner el cartelito "compilando.."
 Implementar el RUN
 Implementar el breakpoint
 
-Hacer la configuracion visual
+HECHO, los widgets se agrandan y se achican. Hacer la configuracion visual
 
 Mejorar el script con lo que dijo michi

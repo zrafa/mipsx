@@ -60,8 +60,8 @@ class Mipsx(Frame):
 			a = a.replace('(gdb) ', '')				
 			w.insert(END,a)		
 			a = p.stdout.readline() 		
-		a = a.replace('(gdb) ', '')				
-		w.insert(END,a)		
+		# a = a.replace('(gdb) ', '')				
+		# w.insert(END,a)		
 	
 	def mostrar_en(w, findelinea):
 #		salida(w)
