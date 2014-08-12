@@ -96,7 +96,7 @@ class Mipsx(Frame):
 		contents = file.readline()
 		file.close()
 
-		area4.insert(END,"Salida Estandar : \n")
+		area4.insert(END,"----------------------------------------\nSalida Estandar : \n")
 		area4.insert(END,contents)
 
 
@@ -111,7 +111,7 @@ class Mipsx(Frame):
 
 	def compilarycargar():
 		area4.delete('1.0',END)
-		area4.insert('1.0',"Compilando y Cargando\r\n")
+		area4.insert('1.0',"Compilando y Cargando ...\r\n")
 		root.update_idletasks()
 		print self.archivoactual
 		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
@@ -149,7 +149,7 @@ class Mipsx(Frame):
 	# Para expandir cuando las ventanas cambian de tamao 
 	for i in range(3):
 		self.columnconfigure(i, weight=1)
-	for i in range(14):
+	for i in range(20):
 		self.rowconfigure(i, weight=1)
 
         lbl = Label(self, text="Registros                                      GDB en MIPS - MR3020")
@@ -204,7 +204,10 @@ class Mipsx(Frame):
 		print self.archivoactual
 
 	def open_command():
-	        file = tkFileDialog.askopenfile(parent=root,mode='rb',title='Select a file')
+		FILEOPENOPTIONS = dict(defaultextension='*.s',
+                  filetypes=[('Archivo assembler','*.s'), ('Todos los archivos','*.*')])
+	        file = tkFileDialog.askopenfile(parent=root,mode='rb',title='Select a file',
+				**FILEOPENOPTIONS)
 	        if file != None:
 			abrir_en_editor(file.name)	      
 #		    contents = file.read()
