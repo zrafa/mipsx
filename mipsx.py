@@ -134,6 +134,12 @@ class Mipsx(Frame):
         self.style.theme_use("default")
         self.pack(fill=BOTH, expand=1)
 
+	# Para expandir cuando las ventanas cambian de tamao 
+	for i in range(3):
+		self.columnconfigure(i, weight=1)
+	for i in range(14):
+		self.rowconfigure(i, weight=1)
+
         lbl = Label(self, text="Registros                                      GDB en MIPS - MR3020")
         lbl.grid(row=1,column=2, sticky=W, pady=4, padx=5)
         
@@ -263,6 +269,10 @@ if __name__ == '__main__':
 	p = Popen(['gdb-multiarch'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 
 	root = Tk()    
+
+	# Para expandir cuando las ventanas cambian de tamao 
+	root.columnconfigure(0,weight=1)
+	root.rowconfigure(0, weight=1)
 
     	app = Mipsx(root)
 	main()  
