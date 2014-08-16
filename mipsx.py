@@ -12,6 +12,8 @@ Modificado y ampliado para ser una GUI de GDB para MIPS. Por Rafael Ignacio Zuri
 
 import time
 import sys
+import random
+
 from subprocess import Popen, PIPE, STDOUT
 
 #from Tkinter import Tk, Text, BOTH, W, N, E, S
@@ -113,32 +115,52 @@ class Mipsx(Frame):
 		area4.delete('1.0',END)
 		area4.insert('1.0',"Compilando y Cargando ...\r\n")
 		root.update_idletasks()
-		print self.archivoactual
+		print self.archivoactual+PUERTOyPS
+#		tub = Popen(['./matargdbserver.sh', PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+#		streamdata = tub.communicate()[0]
+#		time.sleep(10);
 		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		mostrar_en_depuracion()
 		if tub.returncode == 0:
 			area4.insert(END, "Compilacion y carga : OK\n")
 
-			# Abrimos con gdb el archivo ejecutable
 			ejecutable = self.archivoactual+".elf"
-			gdbfile = 'file '+ejecutable+' \n'
-			p.stdin.write(gdbfile)
-			# Respondemos "y"es a recargar			
-			gdbfile = 'y '+ejecutable+' \n'
-			p.stdin.write(gdbfile)
 
 			# Nos conectamos al gdbserver
 			# ip_mips="10.0.15.232"
-			# ip_mips="192.168.0.71"
-			ip_mips="10.0.15.50"
-			comando='target remote '+ip_mips+':4567\n'
+			ip_mips="192.168.0.71"
+			# ip_mips="10.0.15.50"
+			comando='target extended-remote '+ip_mips+':4567\n'
 			p.stdin.write(comando)
+
+			gdbfile = 'set remote exec-file /tmp/'+ejecutable+'\n'
+			p.stdin.write(gdbfile)
+			# Respondemos "y"es a recargar			
+			gdbfile = 'y \n'
+			p.stdin.write(gdbfile)
+
+			# Abrimos con gdb el archivo ejecutable
+			gdbfile = 'file /tmp/'+ejecutable+'\n'
+			p.stdin.write(gdbfile)
+			# Respondemos "y"es a recargar			
+			#gdbfile = 'y '+ejecutable+' \n'
+			gdbfile = 'y  \n'
+			p.stdin.write(gdbfile)
+
+			comando='break 1\n'
+			p.stdin.write(comando)
+			comando='run \n'
+			p.stdin.write(comando)
+
 			mostrar_en(area4,"estado")
 		else:
 			area4.insert(END, "ERROR al compilar y cargar")
 			mostrar_en_depuracion()
 
+
+	# PUERTOyPS=random.randrange(4000,5000+1)
+	PUERTOyPS="4567"
 
 
         self.parent.title("Mipsx - GUI for gdb multiarch anti spim :) ")
@@ -192,7 +214,8 @@ class Mipsx(Frame):
 	archivoactual = "hello.s"
 	archivotemp = "/tmp/archivotemp.txt"
 	# ip_mips = "10.0.15.232"
-	ip_mips = "10.0.15.50"
+	# ip_mips = "10.0.15.50"
+	ip_mips = "192.168.0.71"
 
 	def abrir_en_editor(archivo):
 		fd = open(archivo)      
@@ -265,7 +288,8 @@ def salir():
 	clave = "root"
 	comando = "killall gdbserver"
 	# ip_mips = "10.0.15.232"
-	ip_mips = "10.0.15.50"
+	# ip_mips = "10.0.15.50"
+	ip_mips = "192.168.0.71"
 	killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
 	quit()
 
