@@ -119,11 +119,15 @@ class Mipsx(Frame):
 #		tub = Popen(['./matargdbserver.sh', PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 #		streamdata = tub.communicate()[0]
 #		time.sleep(10);
+		comando='detach \n'
+		p.stdin.write(comando)
+
 		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		mostrar_en_depuracion()
 		if tub.returncode == 0:
 			area4.insert(END, "Compilacion y carga : OK\n")
+
 
 			ejecutable = self.archivoactual+".elf"
 
