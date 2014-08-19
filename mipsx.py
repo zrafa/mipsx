@@ -43,8 +43,14 @@ class Mipsx(Frame):
         
     #def initUI(self):
       
+	self.ejecucion = False
     	def prox_instruccion():
-		p.stdin.write('next\n')
+		if self.ejecucion == False:
+			p.stdin.write('run\n')
+			self.ejecucion = True
+		else:
+			p.stdin.write('next\n')
+
 		mostrar_en(area4, "proximo")
 
 
@@ -119,8 +125,7 @@ class Mipsx(Frame):
 #		tub = Popen(['./matargdbserver.sh', PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 #		streamdata = tub.communicate()[0]
 #		time.sleep(10);
-		comando='detach \n'
-		p.stdin.write(comando)
+		p.stdin.write('detach \n')
 
 		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
@@ -135,27 +140,26 @@ class Mipsx(Frame):
 			# ip_mips="10.0.15.232"
 			ip_mips="192.168.0.71"
 			# ip_mips="10.0.15.50"
+			# comando='target extended-remote '+ip_mips+':4567\n'
 			comando='target extended-remote '+ip_mips+':4567\n'
 			p.stdin.write(comando)
 
 			gdbfile = 'set remote exec-file /tmp/'+ejecutable+'\n'
 			p.stdin.write(gdbfile)
 			# Respondemos "y"es a recargar			
-			gdbfile = 'y \n'
-			p.stdin.write(gdbfile)
+			p.stdin.write('y \n')
 
 			# Abrimos con gdb el archivo ejecutable
 			gdbfile = 'file /tmp/'+ejecutable+'\n'
 			p.stdin.write(gdbfile)
 			# Respondemos "y"es a recargar			
 			#gdbfile = 'y '+ejecutable+' \n'
-			gdbfile = 'y  \n'
-			p.stdin.write(gdbfile)
-
-			comando='break 1\n'
-			p.stdin.write(comando)
-			comando='run \n'
-			p.stdin.write(comando)
+			p.stdin.write('y \n')
+		
+			p.stdin.write('delete \n')
+			p.stdin.write('y \n')
+			p.stdin.write('break __start\n')
+			self.ejecucion = False
 
 			mostrar_en(area4,"estado")
 		else:
@@ -264,6 +268,18 @@ class Mipsx(Frame):
  
 	def dummy():
 	    print "I am a Dummy Command, I will be removed in the next step"
+
+	def salir():
+		clave = "root"
+		comando = "killall gdbserver"
+		# ip_mips = "10.0.15.232"
+		# ip_mips = "10.0.15.50"
+		ip_mips = "192.168.0.71"
+		killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
+		quit()
+
+
+
 	menu = Menu(root)
 	root.config(menu=menu)
 	filemenu = Menu(menu)
@@ -286,17 +302,6 @@ class Mipsx(Frame):
 	menu.add_command(label="Salir", command=salir)
  	abrir_en_editor("hello.s")
         
-
-
-def salir():
-	clave = "root"
-	comando = "killall gdbserver"
-	# ip_mips = "10.0.15.232"
-	# ip_mips = "10.0.15.50"
-	ip_mips = "192.168.0.71"
-	killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
-	quit()
-
 
 
  
