@@ -3,10 +3,13 @@
 # assemble: as --gstabs
 
         .data
-        .text
-        .global __start
+	.word 0xabcd1234
+	.ascii "hola mundo"
 
-__start:
+        .text
+        .global main
+
+main:
         li      $t1, 1
         li      $t3, 1
         add     $t0, $t1, $t3

@@ -54,10 +54,11 @@ class Mipsx(Frame):
 		mostrar_en(area4, "proximo")
 
 
-		memoria()
-		registros()
-		estado()
-		listado()
+		finalizado=estado()
+		if not finalizado:
+			memoria()
+			registros()
+			listado()
 
 	def salida(w, findelinea):
 		w.delete("1.0", END)
@@ -89,7 +90,7 @@ class Mipsx(Frame):
 
 	def memoria():
 #		p.stdin.write('x/15i $pc\n')
-		p.stdin.write('x/40xw $pc\n')
+		p.stdin.write('x/140xw ($pc -100)\n')
 		mostrar_en(area3, "memoria")
 	
 
@@ -98,7 +99,13 @@ class Mipsx(Frame):
 		mostrar_en(area4, "estado")
      		file = open("/tmp/archivotemp.txt")
 	        contents = file.readline()
+		finalizado=False
 		while not "Remote" in contents:
+			if "No stack" in contents:
+				print "FINALIZADO"
+				finalizado=True
+			else:
+				print contents
 			area4.insert(END,contents)
 	        	contents = file.readline()
 		contents = file.readline()
@@ -106,6 +113,7 @@ class Mipsx(Frame):
 
 		area4.insert(END,"----------------------------------------\nSalida Estandar : \n")
 		area4.insert(END,contents)
+		return finalizado
 
 
 	def registros():
@@ -135,11 +143,12 @@ class Mipsx(Frame):
 
 
 			ejecutable = self.archivoactual+".elf"
+			ejecutable = ntpath.basename(ejecutable)
 
 			# Nos conectamos al gdbserver
 			# ip_mips="10.0.15.232"
-			ip_mips="192.168.0.71"
-			# ip_mips="10.0.15.50"
+			# ip_mips="192.168.0.71"
+			ip_mips="10.0.15.50"
 			# comando='target extended-remote '+ip_mips+':4567\n'
 			comando='target extended-remote '+ip_mips+':4567\n'
 			p.stdin.write(comando)
@@ -222,8 +231,8 @@ class Mipsx(Frame):
 	archivoactual = "hello.s"
 	archivotemp = "/tmp/archivotemp.txt"
 	# ip_mips = "10.0.15.232"
-	# ip_mips = "10.0.15.50"
-	ip_mips = "192.168.0.71"
+	ip_mips = "10.0.15.50"
+	# ip_mips = "192.168.0.71"
 
 	def abrir_en_editor(archivo):
 		fd = open(archivo)      
@@ -273,8 +282,8 @@ class Mipsx(Frame):
 		clave = "root"
 		comando = "killall gdbserver"
 		# ip_mips = "10.0.15.232"
-		# ip_mips = "10.0.15.50"
-		ip_mips = "192.168.0.71"
+		ip_mips = "10.0.15.50"
+		# ip_mips = "192.168.0.71"
 		killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
 		quit()
 
