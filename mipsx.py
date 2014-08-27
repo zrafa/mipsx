@@ -90,7 +90,7 @@ class Mipsx(Frame):
 
 	def memoria():
 #		p.stdin.write('x/15i $pc\n')
-		p.stdin.write('x/140xw ($pc -100)\n')
+		p.stdin.write('x/40xw $pc\n')
 		mostrar_en(area3, "memoria")
 	
 
@@ -134,6 +134,8 @@ class Mipsx(Frame):
 #		streamdata = tub.communicate()[0]
 #		time.sleep(10);
 		p.stdin.write('detach \n')
+		comando='target disconnect\n'
+		p.stdin.write(comando)
 
 		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
@@ -148,6 +150,7 @@ class Mipsx(Frame):
 			# Nos conectamos al gdbserver
 			# ip_mips="10.0.15.232"
 			# ip_mips="192.168.0.71"
+
 			ip_mips="10.0.15.50"
 			# comando='target extended-remote '+ip_mips+':4567\n'
 			comando='target extended-remote '+ip_mips+':4567\n'
@@ -167,7 +170,7 @@ class Mipsx(Frame):
 		
 			p.stdin.write('delete \n')
 			p.stdin.write('y \n')
-			p.stdin.write('break __start\n')
+			p.stdin.write('break main\n')
 			self.ejecucion = False
 
 			mostrar_en(area4,"estado")
