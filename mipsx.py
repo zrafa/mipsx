@@ -108,7 +108,8 @@ class Mipsx(Frame):
 				print contents
 			area4.insert(END,contents)
 	        	contents = file.readline()
-		contents = file.readline()
+		# contents = file.readline()
+		contents = file.read()
 		file.close()
 
 		area4.insert(END,"----------------------------------------\nSalida Estandar : \n")
