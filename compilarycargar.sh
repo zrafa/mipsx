@@ -12,18 +12,22 @@ IP_MIPS=10.0.15.50
 exec > /tmp/archivotemp.txt
 exec 2>&1
 
-sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "killall gdbserver "
+# Matamos el gdbserver remoto
+# sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "killall gdbserver "
+sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "kill `ps auxw | grep ${2} | grep gdbserver | awk '{print $2}'` "
 
-# echo archivo origen : $1
+# Copiamos el archivo fuente
 sshpass -p "root" scp ${1} root@${IP_MIPS}:/tmp &&
 
 ARCHIVO=`basename ${1}` 
-# echo archivo nuevo : $ARCHIVO
 
+# Ensamblamos y vinculamos
 #sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "cd /tmp/ && ${CC} -g ${ARCHIVO} -o ${ARCHIVO}.elf " &&
 sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "cd /tmp/ && ${AS} -g --gstabs ${ARCHIVO} -o ${ARCHIVO}.o && ${LD} ${ARCHIVO}.o -o ${ARCHIVO}.elf " &&
 
+# Copiamos el binario nuevamente a la PC
 sshpass -p "root" scp root@${IP_MIPS}:/tmp/${ARCHIVO}.elf /tmp/ &&
 
-(sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "gdbserver 0.0.0.0:4567 /tmp/${ARCHIVO}.elf" &  )
+# Ejecutamos gdbserver
+(sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "gdbserver 0.0.0.0:${2} /tmp/${ARCHIVO}.elf" &  )
 
