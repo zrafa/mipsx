@@ -9,11 +9,12 @@ CC=gcc
 OBJDUMP=mips-linux-gnu-objdump
 IP_MIPS=10.0.15.50
 
-exec > /tmp/archivotemp.txt
+
+exec > /tmp/archivotemp${2}.txt
 exec 2>&1
 
 # Matamos el gdbserver remoto
-# sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "killall gdbserver "
+##  sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "killall gdbserver "
 sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "kill `ps auxw | grep ${2} | grep gdbserver | awk '{print $2}'` "
 
 # Copiamos el archivo fuente

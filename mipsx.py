@@ -74,7 +74,7 @@ class Mipsx(Frame):
 
 	def mostrar_en_depuracion():
 		
-     		file = open("/tmp/archivotemp.txt")
+     		file = open("/tmp/archivotemp"+PUERTOyPS+".txt")
 	        contents = file.read()
 		#area4.delete('1.0',END)
 		area4.insert(END,contents)
@@ -107,7 +107,7 @@ class Mipsx(Frame):
 	def estado():
 		p.stdin.write('info frame\n')
 		mostrar_en(area4, "estado")
-     		file = open("/tmp/archivotemp.txt")
+     		file = open("/tmp/archivotemp"+PUERTOyPS+".txt")
 	        contents = file.readline()
 		while not "Remote" in contents:
 			print contents
@@ -142,10 +142,15 @@ class Mipsx(Frame):
 		print self.archivoactual+PUERTOyPS
 		p.stdin.write('detach \n')
 
+		print self.archivoactual+PUERTOyPS
+		print self.archivoactual+PUERTOyPS
 		tub = Popen(['./compilarycargar.sh', self.archivoactual, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		print self.archivoactual+PUERTOyPS
 		streamdata = tub.communicate()[0]
+		print self.archivoactual+PUERTOyPS
 		mostrar_en_depuracion()
 
+		print self.archivoactual+PUERTOyPS
 		if tub.returncode == 0:
 			area4.insert(END, "Compilacion y carga : OK\n")
 
@@ -243,7 +248,7 @@ class Mipsx(Frame):
 
 	# Variables globales 
 	archivoactual = "hello.s"
-	archivotemp = "/tmp/archivotemp.txt"
+	archivotemp = "/tmp/archivotemp"+PUERTOyPS+".txt"
 	# ip_mips = "10.0.15.232"
 	ip_mips = "10.0.15.50"
 	# ip_mips = "192.168.0.71"
@@ -293,12 +298,15 @@ class Mipsx(Frame):
 	    print "I am a Dummy Command, I will be removed in the next step"
 
 	def salir():
-		clave = "root"
-		comando = "killall gdbserver"
-		# ip_mips = "10.0.15.232"
+		# clave = "root"
+		# comando = 'kill `ps auxw | grep '+PUERTOyPS+' | grep gdbserver | awk \'{print $2}\'` '
 		ip_mips = "10.0.15.50"
+		tub = Popen(['./finalizar_gdbserver.sh', ip_mips, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		streamdata = tub.communicate()[0]
+
+		# ip_mips = "10.0.15.232"
 		# ip_mips = "192.168.0.71"
-		killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
+		# killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
 		quit()
 
 
