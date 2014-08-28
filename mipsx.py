@@ -16,12 +16,8 @@ import random
 
 from subprocess import Popen, PIPE, STDOUT
 
-#from Tkinter import Tk, Text, BOTH, W, N, E, S
 from Tkinter import *
 from ttk import Frame, Button, Label, Style
-
-# Para el menu FILE
-#from tkFileDialog import askopenfilename
 
 # Para extrar el nombre de archivo sin ruta
 import ntpath
@@ -45,35 +41,39 @@ class Mipsx(Frame):
       
 	self.ejecucion = False
     	def prox_instruccion():
-		if self.ejecucion == False:
-			p.stdin.write('run\n')
-			self.ejecucion = True
-		else:
-			p.stdin.write('next\n')
+#		if self.ejecucion == False:
+#			p.stdin.write('run\n')
+#			self.ejecucion = True
+#		else:
+#			p.stdin.write('next\n')
+		p.stdin.write('next\n')
 
 		mostrar_en(area4, "proximo")
 
 
-		finalizado=estado()
-		if not finalizado:
+		estado()
+		if self.ejecucion:
 			memoria()
 			registros()
 			listado()
+		
+	def ejecutar():
+		while self.ejecucion:
+#			print self.ejecucion
+			prox_instruccion()
 
 	def salida(w, findelinea):
 		w.delete("1.0", END)
 				
 		a = p.stdout.readline()
-#		while not "(gdb)" in a:
 		while not findelinea in a:
+			if "No stack" in a:
+				self.ejecucion = False
 			a = a.replace('(gdb) ', '')				
 			w.insert(END,a)		
 			a = p.stdout.readline() 		
-		# a = a.replace('(gdb) ', '')				
-		# w.insert(END,a)		
 	
 	def mostrar_en(w, findelinea):
-#		salida(w)
 		p.stdin.write(findelinea)
 		p.stdin.write('\r\n')
 		salida(w, findelinea)
@@ -101,11 +101,7 @@ class Mipsx(Frame):
 	        contents = file.readline()
 		finalizado=False
 		while not "Remote" in contents:
-			if "No stack" in contents:
-				print "FINALIZADO"
-				finalizado=True
-			else:
-				print contents
+			print contents
 			area4.insert(END,contents)
 	        	contents = file.readline()
 		# contents = file.readline()
@@ -114,6 +110,8 @@ class Mipsx(Frame):
 
 		area4.insert(END,"----------------------------------------\nSalida Estandar : \n")
 		area4.insert(END,contents)
+
+		print finalizado
 		return finalizado
 
 
@@ -131,16 +129,12 @@ class Mipsx(Frame):
 		area4.insert('1.0',"Compilando y Cargando ...\r\n")
 		root.update_idletasks()
 		print self.archivoactual+PUERTOyPS
-#		tub = Popen(['./matargdbserver.sh', PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-#		streamdata = tub.communicate()[0]
-#		time.sleep(10);
 		p.stdin.write('detach \n')
-		comando='target disconnect\n'
-		p.stdin.write(comando)
 
 		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		mostrar_en_depuracion()
+
 		if tub.returncode == 0:
 			area4.insert(END, "Compilacion y carga : OK\n")
 
@@ -166,15 +160,18 @@ class Mipsx(Frame):
 			gdbfile = 'file /tmp/'+ejecutable+'\n'
 			p.stdin.write(gdbfile)
 			# Respondemos "y"es a recargar			
-			#gdbfile = 'y '+ejecutable+' \n'
 			p.stdin.write('y \n')
 		
 			p.stdin.write('delete \n')
 			p.stdin.write('y \n')
 			p.stdin.write('break main\n')
-			self.ejecucion = False
+			p.stdin.write('run\n')
+			self.ejecucion = True
 
 			mostrar_en(area4,"estado")
+			memoria()
+			registros()
+			listado()
 		else:
 			area4.insert(END, "ERROR al compilar y cargar")
 			mostrar_en_depuracion()
@@ -232,6 +229,7 @@ class Mipsx(Frame):
             padx=1, sticky=E+W+S+N)
 
 
+	# Variables globales 
 	archivoactual = "hello.s"
 	archivotemp = "/tmp/archivotemp.txt"
 	# ip_mips = "10.0.15.232"
@@ -304,7 +302,7 @@ class Mipsx(Frame):
 	filemenu.add_command(label="Salir", command=salir)
 
 
-	menu.add_command(label="Run", command=salir)
+	menu.add_command(label="Run", command=ejecutar)
 	menu.add_command(label="Next", command=prox_instruccion)
 	menu.add_command(label="Breakpoint", command=salir)
 	menu.add_command(label="Compilar y Cargar", command=compilarycargar)
