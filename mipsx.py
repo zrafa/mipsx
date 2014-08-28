@@ -142,7 +142,7 @@ class Mipsx(Frame):
 		print self.archivoactual+PUERTOyPS
 		p.stdin.write('detach \n')
 
-		tub = Popen(['./compilarycargar.sh', self.archivoactual], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		tub = Popen(['./compilarycargar.sh', self.archivoactual, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		mostrar_en_depuracion()
 
@@ -159,7 +159,8 @@ class Mipsx(Frame):
 
 			ip_mips="10.0.15.50"
 			# comando='target extended-remote '+ip_mips+':4567\n'
-			comando='target extended-remote '+ip_mips+':4567\n'
+			# comando='target extended-remote '+ip_mips+':4567\n'
+			comando='target extended-remote '+ip_mips+':'+PUERTOyPS+'\n'
 			p.stdin.write(comando)
 
 			gdbfile = 'set remote exec-file /tmp/'+ejecutable+'\n'
@@ -188,8 +189,8 @@ class Mipsx(Frame):
 			mostrar_en_depuracion()
 
 
-	# PUERTOyPS=random.randrange(4000,5000+1)
-	PUERTOyPS="4567"
+	PUERTOyPS=str( random.randrange(4000,5000+1) )
+	# PUERTOyPS="4567"
 
 
         self.parent.title("Mipsx - GUI for gdb multiarch anti spim :) ")
