@@ -35,21 +35,12 @@ class Mipsx(Frame):
          
        	self.parent = parent
         
-   #     self.initUI()
-        
-    #def initUI(self):
       
 	self.ejecucion = False
     	def prox_instruccion():
-#		if self.ejecucion == False:
-#			p.stdin.write('run\n')
-#			self.ejecucion = True
-#		else:
-#			p.stdin.write('next\n')
 		p.stdin.write('next\n')
 
 		mostrar_en(area4, "proximo")
-
 
 		estado()
 		if self.ejecucion:
@@ -59,7 +50,6 @@ class Mipsx(Frame):
 		
 	def ejecutar():
 		while self.ejecucion:
-#			print self.ejecucion
 			prox_instruccion()
 
 	def salida(w, findelinea):
@@ -67,8 +57,11 @@ class Mipsx(Frame):
 				
 		a = p.stdout.readline()
 		while not findelinea in a:
+			# Esto es para saber si la ejecucion termino'. 
+			# TODO: Hay que quitarlo de este metodo. Donde ponerlo?
 			if "No stack" in a:
 				self.ejecucion = False
+
 			a = a.replace('(gdb) ', '')				
 			w.insert(END,a)		
 			a = p.stdout.readline() 		
@@ -99,20 +92,21 @@ class Mipsx(Frame):
 		mostrar_en(area4, "estado")
      		file = open("/tmp/archivotemp.txt")
 	        contents = file.readline()
-		finalizado=False
 		while not "Remote" in contents:
 			print contents
 			area4.insert(END,contents)
 	        	contents = file.readline()
-		# contents = file.readline()
+		# contents = file.read()
+
+	        contents = file.readline()
+		while not "Process " in contents:
+	        	contents = file.readline()
+
+		area4.insert(END,"----------------------------------------\nSalida Estandar : \n\n")
+
 		contents = file.read()
 		file.close()
-
-		area4.insert(END,"----------------------------------------\nSalida Estandar : \n")
 		area4.insert(END,contents)
-
-		print finalizado
-		return finalizado
 
 
 	def registros():
