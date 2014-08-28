@@ -82,8 +82,23 @@ class Mipsx(Frame):
 		
 
 	def memoria():
-#		p.stdin.write('x/15i $pc\n')
-		p.stdin.write('x/40xw $pc\n')
+		p.stdin.write('info address memoria\n')
+		p.stdin.write('infomemoria\n')
+		a = p.stdout.readline()
+		solicitar_seg_de_datos = ""
+		while not "infomemoria" in a:
+			print "a : "+a
+			if "Symbol " in a:
+				a = a.replace('(gdb) Symbol "memoria" is at ', '')
+				a = a.replace(' in a file compiled without debugging.','')
+				solicitar_seg_de_datos = "x/40xw "+a+"\n"
+			a = p.stdout.readline()
+			
+		# p.stdin.write('x/40xw $pc\n')
+		if solicitar_seg_de_datos == "":
+			p.stdin.write('x/40xw $pc\n')
+		else:
+			p.stdin.write(solicitar_seg_de_datos)
 		mostrar_en(area3, "memoria")
 	
 
