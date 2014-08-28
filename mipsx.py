@@ -61,6 +61,7 @@ class Mipsx(Frame):
 			# TODO: Hay que quitarlo de este metodo. Donde ponerlo?
 			if "No stack" in a:
 				self.ejecucion = False
+				w.insert(END,'\n\nEjecucion FINALIZADA\n\n')
 
 			a = a.replace('(gdb) ', '')				
 			w.insert(END,a)		
@@ -82,6 +83,7 @@ class Mipsx(Frame):
 		
 
 	def memoria():
+		# Para mostrar el segmento de datos, la etiqueta memoria debe estar al principio
 		p.stdin.write('info address memoria\n')
 		p.stdin.write('infomemoria\n')
 		a = p.stdout.readline()
@@ -94,11 +96,11 @@ class Mipsx(Frame):
 				solicitar_seg_de_datos = "x/40xw "+a+"\n"
 			a = p.stdout.readline()
 			
-		# p.stdin.write('x/40xw $pc\n')
 		if solicitar_seg_de_datos == "":
 			p.stdin.write('x/40xw $pc\n')
 		else:
 			p.stdin.write(solicitar_seg_de_datos)
+		p.stdin.write('x/40xw $sp\n')
 		mostrar_en(area3, "memoria")
 	
 
@@ -216,7 +218,7 @@ class Mipsx(Frame):
         area2.grid(row=8, column=2, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
-        lbl = Label(self, text="Memoria")
+        lbl = Label(self, text='Memoria - Segmento de datos (debe existir la etiqueta "memoria") y Pila')
         lbl.grid(row=13, column=2, pady=1, padx=1, sticky=W+N+E+S)
 
         area3 = Text(self,height=15,width=80)

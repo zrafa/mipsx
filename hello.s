@@ -1,8 +1,7 @@
 # Hello World en MIPS
 #
-# assemble: as --gstabs
-
         .data
+memoria:
 	.word 0xabcd1234
 	.ascii "hola mundo"
 
