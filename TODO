@@ -1,16 +1,20 @@
 
+cuando se carga un nuevo archivo hay que limpiar el contenido de todas
+las ventanitas para no confundir
+quitar breakpoint
+hacer aleatorio el archivo a compilar y cargar, leyendo el buffer del editor de texto
+
 hacer un nro random mayor a 4000. Que compile el binario con nombre ejecutable random, y lo ejecute en el puerto random. Al finalizar matar el gdbserver random.
 
-HECHO, hacer la salida estandar . tal vez mostrando /tmp/archivotemp
 
 
-Fijarse si la memoria para .data es siempre la misma
+HECHO Fijarse si la memoria para .data es siempre la misma
 
-Cuando compila poner el cartelito "compilando.."
+HECHO Cuando compila poner el cartelito "compilando.."
 
-Implementar el RUN
-Implementar el breakpoint
+HECHO Implementar el RUN
 
 HECHO, los widgets se agrandan y se achican. Hacer la configuracion visual
 
-Mejorar el script con lo que dijo michi
+HECHO Mejorar el script con lo que dijo michi
+HECHO, hacer la salida estandar . tal vez mostrando /tmp/archivotemp

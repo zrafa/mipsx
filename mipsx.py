@@ -113,11 +113,6 @@ class Mipsx(Frame):
 			print contents
 			area4.insert(END,contents)
 	        	contents = file.readline()
-		# contents = file.read()
-
-	        contents = file.readline()
-		while not "Process " in contents:
-	        	contents = file.readline()
 
 		area4.insert(END,"----------------------------------------\nSalida Estandar : \n\n")
 
@@ -165,11 +160,12 @@ class Mipsx(Frame):
 			ip_mips="10.0.15.50"
 			# comando='target extended-remote '+ip_mips+':4567\n'
 			# comando='target extended-remote '+ip_mips+':4567\n'
-			comando='target extended-remote '+ip_mips+':'+PUERTOyPS+'\n'
+			#comando='target extended-remote '+ip_mips+':'+PUERTOyPS+'\n'
+			comando='target remote '+ip_mips+':'+PUERTOyPS+'\n'
 			p.stdin.write(comando)
 
-			gdbfile = 'set remote exec-file /tmp/'+ejecutable+'\n'
-			p.stdin.write(gdbfile)
+			# gdbfile = 'set remote exec-file /tmp/'+ejecutable+'\n'
+			# p.stdin.write(gdbfile)
 			# Respondemos "y"es a recargar			
 			p.stdin.write('y \n')
 
@@ -182,7 +178,8 @@ class Mipsx(Frame):
 			p.stdin.write('delete \n')
 			p.stdin.write('y \n')
 			p.stdin.write('break main\n')
-			p.stdin.write('run\n')
+			# p.stdin.write('run\n')
+			p.stdin.write('continue\n')
 			self.ejecucion = True
 
 			mostrar_en(area4,"estado")
@@ -297,6 +294,9 @@ class Mipsx(Frame):
 	def dummy():
 	    print "I am a Dummy Command, I will be removed in the next step"
 
+	def no_hacer_nada():
+		print "nada por hacer"
+
 	def salir():
 		# clave = "root"
 		# comando = 'kill `ps auxw | grep '+PUERTOyPS+' | grep gdbserver | awk \'{print $2}\'` '
@@ -324,7 +324,7 @@ class Mipsx(Frame):
 
 	menu.add_command(label="Run", command=ejecutar)
 	menu.add_command(label="Next", command=prox_instruccion)
-	menu.add_command(label="Breakpoint", command=salir)
+	menu.add_command(label="Breakpoint", command=no_hacer_nada)
 	menu.add_command(label="Compilar y Cargar", command=compilarycargar)
 
 	helpmenu = Menu(menu)
