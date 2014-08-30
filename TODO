@@ -1,8 +1,9 @@
 
+agregar la configuracion de ip y clave/usuario para la maquina remota
+borrar todos los temporales
 cuando se carga un nuevo archivo hay que limpiar el contenido de todas
 las ventanitas para no confundir
 quitar breakpoint
-hacer aleatorio el archivo a compilar y cargar, leyendo el buffer del editor de texto
 
 hacer un nro random mayor a 4000. Que compile el binario con nombre ejecutable random, y lo ejecute en el puerto random. Al finalizar matar el gdbserver random.
 
@@ -18,3 +19,4 @@ HECHO, los widgets se agrandan y se achican. Hacer la configuracion visual
 
 HECHO Mejorar el script con lo que dijo michi
 HECHO, hacer la salida estandar . tal vez mostrando /tmp/archivotemp
+HECHO hacer aleatorio el archivo a compilar y cargar, leyendo el buffer del editor de texto
