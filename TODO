@@ -1,4 +1,7 @@
 
+agregar que cuando salis compara el buffer con el archivo original
+para saber si se guardo o no
+
 agregar la configuracion de ip y clave/usuario para la maquina remota
 borrar todos los temporales
 cuando se carga un nuevo archivo hay que limpiar el contenido de todas

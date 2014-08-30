@@ -191,7 +191,7 @@ class Mipsx(Frame):
 	# PUERTOyPS="4567"
 
 
-        self.parent.title("Mipsx - GUI for gdb multiarch anti spim :) ")
+        self.parent.title("Mipsx - GUI for gdb multiarch")
         self.style = Style()
         self.style.theme_use("default")
         self.pack(fill=BOTH, expand=1)
@@ -296,7 +296,7 @@ class Mipsx(Frame):
 	        root.destroy()
 	 
 	def about_command():
-	    label = tkMessageBox.showinfo("Acerca de", "MIPSX - GUI for gdb multiarch anti spim :)\n\nEntorno de desarrollo en lenguaje assembler arquitectura MIPS\nEste programa ensabla, genera el programa ejecutable, y lo ejecuta en modo debug en una maquina MIPS real\n\nCopyright 2014 Rafael Ignacio Zurita\n\nFacultad de Informatica\nUniversidad Nacional del Comahue\n\nThis program is free software; you can redistribute it and/or modify it under the terms of the GPL v2")
+	    label = tkMessageBox.showinfo("Acerca de", "MIPSX - GUI for gdb multiarch\n\nEntorno de desarrollo en lenguaje assembler arquitectura MIPS\nEste programa ensabla, genera el programa ejecutable, y lo ejecuta en modo debug en una maquina MIPS real\n\nCopyright 2014 Rafael Ignacio Zurita\n\nFacultad de Informatica\nUniversidad Nacional del Comahue\n\nThis program is free software; you can redistribute it and/or modify it under the terms of the GPL v2")
 		         
  
 	def dummy():
@@ -305,13 +305,32 @@ class Mipsx(Frame):
 	def no_hacer_nada():
 		print "nada por hacer"
 
+	def archivo_sin_guardar():
+		data = area5.get('1.0', END+'-1c')
+		fd = open(self.archivoactual)      
+		contents = fd.read()
+	        fd.close()
+		if data == contents:
+			return False
+		res = tkMessageBox.askquestion("Confirmar", "Archivo sin guardar\nEsta seguro de finalizar el programa?", icon='warning')
+		if res == 'yes':
+			return False
+		return True
 	def salir():
 		# clave = "root"
 		# comando = 'kill `ps auxw | grep '+PUERTOyPS+' | grep gdbserver | awk \'{print $2}\'` '
+		if archivo_sin_guardar():
+			return
 		ip_mips = "10.0.15.50"
 		tub = Popen(['./finalizar_gdbserver.sh', ip_mips, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 
+		tmp = "/tmp/archivo"+PUERTOyPS+".s"
+		tmp2 = "archivo"+PUERTOyPS+".s"
+		tmp3 = "/tmp/archivo"+PUERTOyPS+".s.elf"
+		tmp4 = "/tmp/archivo"+PUERTOyPS+".txt"
+		tub = Popen(['rm', tmp, tmp2, tmp3, tmp4], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		streamdata = tub.communicate()[0]
 		# ip_mips = "10.0.15.232"
 		# ip_mips = "192.168.0.71"
 		# killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
