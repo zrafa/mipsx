@@ -134,23 +134,21 @@ class Mipsx(Frame):
 		area4.delete('1.0',END)
 		area4.insert('1.0',"Compilando y Cargando ...\r\n")
 		root.update_idletasks()
-		print self.archivoactual+PUERTOyPS
-		p.stdin.write('detach \n')
 
-		print self.archivoactual+PUERTOyPS
-		print self.archivoactual+PUERTOyPS
-		tub = Popen(['./compilarycargar.sh', self.archivoactual, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-		print self.archivoactual+PUERTOyPS
+		p.stdin.write('detach \n')
+		guardar_archivo_a_compilar()
+		#tub = Popen(['./compilarycargar.sh', self.archivoactual, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		tub = Popen(['./compilarycargar.sh', self.archivoacompilar, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
-		print self.archivoactual+PUERTOyPS
 		mostrar_en_depuracion()
 
-		print self.archivoactual+PUERTOyPS
 		if tub.returncode == 0:
 			area4.insert(END, "Compilacion y carga : OK\n")
 
 
-			ejecutable = self.archivoactual+".elf"
+			# ejecutable = self.archivoactual+".elf"
+			# ejecutable = ntpath.basename(ejecutable)
+			ejecutable = self.archivoacompilar+".elf"
 			ejecutable = ntpath.basename(ejecutable)
 
 			# Nos conectamos al gdbserver
@@ -158,8 +156,6 @@ class Mipsx(Frame):
 			# ip_mips="192.168.0.71"
 
 			ip_mips="10.0.15.50"
-			# comando='target extended-remote '+ip_mips+':4567\n'
-			# comando='target extended-remote '+ip_mips+':4567\n'
 			#comando='target extended-remote '+ip_mips+':'+PUERTOyPS+'\n'
 			comando='target remote '+ip_mips+':'+PUERTOyPS+'\n'
 			p.stdin.write(comando)
@@ -245,6 +241,7 @@ class Mipsx(Frame):
 
 	# Variables globales 
 	archivoactual = "hello.s"
+	archivoacompilar = "hello.s"
 	archivotemp = "/tmp/archivotemp"+PUERTOyPS+".txt"
 	# ip_mips = "10.0.15.232"
 	ip_mips = "10.0.15.50"
@@ -266,13 +263,24 @@ class Mipsx(Frame):
 				**FILEOPENOPTIONS)
 	        if file != None:
 			abrir_en_editor(file.name)	      
-#		    contents = file.read()
-#		    area5.delete('1.0',END)
-#	            area5.insert('1.0',contents)
-#	            file.close()
-#	            self.archivoactual = file.name
-#		    print self.archivoactual
  
+	def guardar_archivo_a_compilar():
+		self.archivoacompilar = "/tmp/archivo"+PUERTOyPS+".s"
+		tub = Popen(['rm', self.archivoacompilar], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		streamdata = tub.communicate()[0]
+		tub = Popen(['touch', self.archivoacompilar], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		streamdata = tub.communicate()[0]
+		tmp = open(self.archivoacompilar, "w")
+	    	if tmp != None:
+	        	data = area5.get('1.0', END+'-1c')
+	        	tmp.write(data)
+	        	tmp.close()
+
+			archivotmppwd = "archivo"+PUERTOyPS+".s"
+			tub = Popen(['cp', self.archivoacompilar, archivotmppwd], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+			streamdata = tub.communicate()[0]
+	
+
 	def save_command():
 	    file = tkFileDialog.asksaveasfile(mode='w')
 	    if file != None:
