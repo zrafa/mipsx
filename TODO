@@ -1,15 +1,16 @@
 
-agregar que cuando salis compara el buffer con el archivo original
+HECHO agregar que cuando salis compara el buffer con el archivo original
 para saber si se guardo o no
 
 agregar la configuracion de ip y clave/usuario para la maquina remota
-borrar todos los temporales
+HECHO borrar todos los temporales
 cuando se carga un nuevo archivo hay que limpiar el contenido de todas
 las ventanitas para no confundir
-quitar breakpoint
+HECHO (se dejo sin que haga ningun problema) quitar breakpoint
 
-hacer un nro random mayor a 4000. Que compile el binario con nombre ejecutable random, y lo ejecute en el puerto random. Al finalizar matar el gdbserver random.
+HECHO hacer un nro random mayor a 4000. Que compile el binario con nombre ejecutable random, y lo ejecute en el puerto random. Al finalizar matar el gdbserver random.
 
+hacer que los scripts no se ejecuten con ./
 
 
 HECHO Fijarse si la memoria para .data es siempre la misma
