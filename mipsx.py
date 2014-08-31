@@ -323,9 +323,8 @@ class Mipsx(Frame):
 		if res == 'yes':
 			return False
 		return True
+
 	def salir():
-		# clave = "root"
-		# comando = 'kill `ps auxw | grep '+PUERTOyPS+' | grep gdbserver | awk \'{print $2}\'` '
 		if archivo_sin_guardar():
 			return
 		ip_mips = "10.0.15.50"
@@ -335,7 +334,7 @@ class Mipsx(Frame):
 		tmp = "/tmp/archivo"+PUERTOyPS+".s"
 		tmp2 = "archivo"+PUERTOyPS+".s"
 		tmp3 = "/tmp/archivo"+PUERTOyPS+".s.elf"
-		tmp4 = "/tmp/archivo"+PUERTOyPS+".txt"
+		tmp4 = "/tmp/archivotemp"+PUERTOyPS+".txt"
 		tub = Popen(['rm', tmp, tmp2, tmp3, tmp4], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		# ip_mips = "10.0.15.232"
