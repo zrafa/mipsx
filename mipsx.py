@@ -1,5 +1,3 @@
-
-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
@@ -7,7 +5,8 @@
 Autor original del ejemplo de una aplicacion Tk: Jan Bodnar
 last modified: December 2010
 website: www.zetcode.com
-Modificado y ampliado para ser una GUI de GDB para MIPS. Por Rafael Ignacio Zurita
+Modificado y ampliado para ser una GUI de GDB para MIPS. 
+(C) 2014 - Rafael Ignacio Zurita <rafa@fi.uncoma.edu.ar>
 """
 
 import time
