@@ -246,6 +246,13 @@ class Mipsx(Frame):
 	ip_mips = "10.0.15.50"
 	# ip_mips = "192.168.0.71"
 
+	# Al abrir un archivo deseamos tener un area de trabajo cero
+	def limpiar_areas():
+		area4.delete('1.0',END)
+		area3.delete('1.0',END)
+		area2.delete('1.0',END)
+		area1.delete('1.0',END)
+
 	def abrir_en_editor(archivo):
 		fd = open(archivo)      
 		contents = fd.read()
@@ -261,6 +268,7 @@ class Mipsx(Frame):
 	        file = tkFileDialog.askopenfile(parent=root,mode='rb',title='Select a file',
 				**FILEOPENOPTIONS)
 	        if file != None:
+			limpiar_areas()
 			abrir_en_editor(file.name)	      
  
 	def guardar_archivo_a_compilar():
