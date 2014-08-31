@@ -138,7 +138,7 @@ class Mipsx(Frame):
 		p.stdin.write('detach \n')
 		guardar_archivo_a_compilar()
 		#tub = Popen(['./compilarycargar.sh', self.archivoactual, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-		tub = Popen(['./compilarycargar.sh', self.archivoacompilar, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		tub = Popen(['mipsx_compilarycargar.sh', self.archivoacompilar, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		mostrar_en_depuracion()
 
@@ -322,7 +322,7 @@ class Mipsx(Frame):
 		if archivo_sin_guardar():
 			return
 		ip_mips = "10.0.15.50"
-		tub = Popen(['./finalizar_gdbserver.sh', ip_mips, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		tub = Popen(['mipsx_finalizar_gdbserver.sh', ip_mips, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 
 		tmp = "/tmp/archivo"+PUERTOyPS+".s"
