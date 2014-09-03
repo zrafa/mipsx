@@ -30,12 +30,14 @@ class Mipsx(Frame):
 
 
      def __init__(self, parent):
+
       	Frame.__init__(self, parent)   
          
        	self.parent = parent
-        
-      
 	self.ejecucion = False
+
+
+
     	def prox_instruccion():
 		p.stdin.write('next\n')
 
@@ -366,6 +368,8 @@ class Mipsx(Frame):
 	menu.add_command(label="Salir", command=salir)
  	abrir_en_editor("hello.s")
         
+	# para que al cerrar la ventana cierre los temporales y los borre
+	root.protocol("WM_DELETE_WINDOW", salir)
 
 
  
