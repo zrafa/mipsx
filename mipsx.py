@@ -129,6 +129,7 @@ class Mipsx(Frame):
 
 	def listado():
 		p.stdin.write('list 1,100\n')
+		p.stdin.write('disas main \n')
 		mostrar_en(area2, "listado")
 
 	def compilarycargar():
@@ -211,7 +212,7 @@ class Mipsx(Frame):
         area1.grid(row=2, column=2, columnspan=1, rowspan=5, 
             sticky=E+W+S+N)
         
-        lbl = Label(self, text="Programa en Assembler")
+        lbl = Label(self, text="Programa en Assembler y Programa Binario Decodificado (disassemble)")
         lbl.grid(row=7, column=2, pady=1, padx=1, sticky=W+N+E+S)
         
     	area2 = Text(self, height=6,width=80)
