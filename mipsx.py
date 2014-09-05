@@ -101,6 +101,7 @@ class Mipsx(Frame):
 			p.stdin.write('x/40xw $pc\n')
 		else:
 			p.stdin.write(solicitar_seg_de_datos)
+		p.stdin.write('x/40xw main\n')
 		p.stdin.write('x/40xw $sp\n')
 		mostrar_en(area3, "memoria")
 	
@@ -219,7 +220,7 @@ class Mipsx(Frame):
         area2.grid(row=8, column=2, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
-        lbl = Label(self, text='Memoria - Segmento de datos (debe existir la etiqueta "memoria") y Pila')
+        lbl = Label(self, text='Memoria - Segmento de datos (debe existir la etiqueta "memoria") - Segmento de texto - Pila')
         lbl.grid(row=13, column=2, pady=1, padx=1, sticky=W+N+E+S)
 
         area3 = Text(self,height=15,width=80)
