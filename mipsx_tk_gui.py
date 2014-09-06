@@ -54,14 +54,14 @@ class MipsxTkGui(Frame):
         self.area1.grid(row=2, column=2, columnspan=1, rowspan=5, 
             sticky=E+W+S+N)
         
-        lbl = Label(self, text="Programa en Assembler")
+        lbl = Label(self, text="Programa en Assembler y Prorama Binario Decodificado")
         lbl.grid(row=7, column=2, pady=1, padx=1, sticky=W+N+E+S)
         
     	self.area2 = Text(self, height=6,width=80)
         self.area2.grid(row=8, column=2, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
-        lbl = Label(self, text='Memoria - Segmento de datos (debe existir la etiqueta "memoria") y Pila')
+        lbl = Label(self, text='Memoria - Segmento de datos (debe existir la etiqueta "memoria") - Segmento de texto - Pila')
         lbl.grid(row=13, column=2, pady=1, padx=1, sticky=W+N+E+S)
 
         self.area3 = Text(self,height=15,width=80)
@@ -149,6 +149,7 @@ class MipsxControl(Frame):
  	self.abrir_en_editor("hello.s")
 
 	
+	root.protocol("WM_DELETE_WINDOW", self.salir)
 
 
     def prox_instruccion(self):
@@ -217,29 +218,32 @@ class MipsxControl(Frame):
 			p.stdin.write('x/40xw $pc\n')
 		else:
 			p.stdin.write(solicitar_seg_de_datos)
+		p.stdin.write('x/50xw main\n')
 		p.stdin.write('x/40xw $sp\n')
 		self.mostrar_en(self.paneles.area3, "memoria")
 	
 
     def estado(self):
 		p.stdin.write('info frame\n')
-		self.mostrar_en(area4, "estado")
+		self.mostrar_en(self.paneles.area4, "estado")
      		file = open("/tmp/archivotemp"+self.PUERTOyPS+".txt")
 	        contents = file.readline()
 		while not "Remote" in contents:
 			print contents
-			area4.insert(END,contents)
+			self.paneles.panel_agregar(self.paneles.area4, contents)
 	        	contents = file.readline()
 
-		area4.insert(END,"----------------------------------------\nSalida Estandar : \n\n")
+		self.paneles.panel_agregar(self.paneles.area4, "----------------------------------------\nSalida Estandar : \n\n")
 
 		contents = file.read()
 		file.close()
-		area4.insert(END,contents)
+		self.paneles.panel_agregar(self.paneles.area4, contents) 
+		# area4.insert(END,contents)
 
 
     def registros(self):
 		p.stdin.write('info register\n')
+		p.stdin.write('disas main\n')
 		self.mostrar_en(self.paneles.area1, "registros")
 
 
