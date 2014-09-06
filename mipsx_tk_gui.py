@@ -118,11 +118,11 @@ class MipsxTkGui(Frame):
 		area.insert(END,contents)
 
     # Al abrir un archivo deseamos tener un area de trabajo cero
-    def limpiar_areas(self):
-		area4.delete('1.0',END)
-		area3.delete('1.0',END)
-		area2.delete('1.0',END)
-		area1.delete('1.0',END)
+    def limpiar_paneles(self):
+		self.area4.delete('1.0',END)
+		self.area3.delete('1.0',END)
+		self.area2.delete('1.0',END)
+		self.area1.delete('1.0',END)
 
 
 
@@ -153,7 +153,7 @@ class MipsxControl(Frame):
 
 
     def prox_instruccion(self):
-		p.stdin.write('next\n')
+		gdb.stdin.write('next\n')
 
 		self.mostrar_en(self.paneles.area4, "proximo")
 
@@ -165,13 +165,13 @@ class MipsxControl(Frame):
 		
     def ejecutar(self):
 		while self.ejecucion:
-			prox_instruccion()
+			self.prox_instruccion()
 
     def salida(self, w, findelinea):
 		# w.delete("1.0", END)
 		self.paneles.limpiar_panel(w)
 				
-		a = p.stdout.readline()
+		a = gdb.stdout.readline()
 		while not findelinea in a:
 			# Esto es para saber si la ejecucion termino'. 
 			# TODO: Hay que quitarlo de este metodo. Donde ponerlo?
@@ -183,11 +183,11 @@ class MipsxControl(Frame):
 			a = a.replace('(gdb) ', '')				
 			# w.insert(END,a)		
 			self.paneles.panel_agregar(w, a)
-			a = p.stdout.readline() 		
+			a = gdb.stdout.readline() 		
 	
     def mostrar_en(self, w, findelinea):
-		p.stdin.write(findelinea)
-		p.stdin.write('\r\n')
+		gdb.stdin.write(findelinea)
+		gdb.stdin.write('\r\n')
 		self.salida(w, findelinea)
 
     def mostrar_en_depuracion(self):
@@ -202,9 +202,9 @@ class MipsxControl(Frame):
 
     def memoria(self):
 		# Para mostrar el segmento de datos, la etiqueta memoria debe estar al principio
-		p.stdin.write('info address memoria\n')
-		p.stdin.write('infomemoria\n')
-		a = p.stdout.readline()
+		gdb.stdin.write('info address memoria\n')
+		gdb.stdin.write('infomemoria\n')
+		a = gdb.stdout.readline()
 		solicitar_seg_de_datos = ""
 		while not "infomemoria" in a:
 			print "a : "+a
@@ -212,19 +212,19 @@ class MipsxControl(Frame):
 				a = a.replace('(gdb) Symbol "memoria" is at ', '')
 				a = a.replace(' in a file compiled without debugging.','')
 				solicitar_seg_de_datos = "x/40xw "+a+"\n"
-			a = p.stdout.readline()
+			a = gdb.stdout.readline()
 			
 		if solicitar_seg_de_datos == "":
-			p.stdin.write('x/40xw $pc\n')
+			gdb.stdin.write('x/40xw $pc\n')
 		else:
-			p.stdin.write(solicitar_seg_de_datos)
-		p.stdin.write('x/50xw main\n')
-		p.stdin.write('x/40xw $sp\n')
+			gdb.stdin.write(solicitar_seg_de_datos)
+		gdb.stdin.write('x/50xw main\n')
+		gdb.stdin.write('x/40xw $sp\n')
 		self.mostrar_en(self.paneles.area3, "memoria")
 	
 
     def estado(self):
-		p.stdin.write('info frame\n')
+		gdb.stdin.write('info frame\n')
 		self.mostrar_en(self.paneles.area4, "estado")
      		file = open("/tmp/archivotemp"+self.PUERTOyPS+".txt")
 	        contents = file.readline()
@@ -242,13 +242,13 @@ class MipsxControl(Frame):
 
 
     def registros(self):
-		p.stdin.write('info register\n')
-		p.stdin.write('disas main\n')
+		gdb.stdin.write('info register\n')
 		self.mostrar_en(self.paneles.area1, "registros")
 
 
     def listado(self):
-		p.stdin.write('list 1,100\n')
+		gdb.stdin.write('list 1,100\n')
+		gdb.stdin.write('disas main\n')
 		self.mostrar_en(self.paneles.area2, "listado")
 
     def compilarycargar(self):
@@ -258,7 +258,7 @@ class MipsxControl(Frame):
 		self.paneles.panel_agregar(self.paneles.area4, "Compilando y Cargando ...\r\n")
 		root.update_idletasks()
 
-		p.stdin.write('detach \n')
+		gdb.stdin.write('detach \n')
 		self.guardar_archivo_a_compilar()
 		tub = Popen(['mipsx_compilarycargar.sh', self.archivoacompilar, self.PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
@@ -278,21 +278,21 @@ class MipsxControl(Frame):
 
 			ip_mips="10.0.15.50"
 			comando='target remote '+ip_mips+':'+self.PUERTOyPS+'\n'
-			p.stdin.write(comando)
+			gdb.stdin.write(comando)
 
 			# Respondemos "y"es a recargar			
-			p.stdin.write('y \n')
+			gdb.stdin.write('y \n')
 
 			# Abrimos con gdb el archivo ejecutable
 			gdbfile = 'file /tmp/'+ejecutable+'\n'
-			p.stdin.write(gdbfile)
+			gdb.stdin.write(gdbfile)
 			# Respondemos "y"es a recargar			
-			p.stdin.write('y \n')
+			gdb.stdin.write('y \n')
 		
-			p.stdin.write('delete \n')
-			p.stdin.write('y \n')
-			p.stdin.write('break main\n')
-			p.stdin.write('continue\n')
+			gdb.stdin.write('delete \n')
+			gdb.stdin.write('y \n')
+			gdb.stdin.write('break main\n')
+			gdb.stdin.write('continue\n')
 			self.ejecucion = True
 
 			self.mostrar_en(self.paneles.area4,"estado")
@@ -323,8 +323,8 @@ class MipsxControl(Frame):
 	        file = tkFileDialog.askopenfile(parent=root,mode='rb',title='Select a file',
 				**FILEOPENOPTIONS)
 	        if file != None:
-			limpiar_areas()
-			abrir_en_editor(file.name)	      
+			self.paneles.limpiar_paneles()
+			self.abrir_en_editor(file.name)	      
  
     def guardar_archivo_a_compilar(self):
 		self.archivoacompilar = "/tmp/archivo"+self.PUERTOyPS+".s"
@@ -416,7 +416,7 @@ def main():
 
 
 if __name__ == '__main__':
-	p = Popen(['gdb-multiarch'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+	gdb = Popen(['gdb-multiarch'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 
 	root = Tk()    
 
