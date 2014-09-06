@@ -46,40 +46,40 @@ class MipsxTkGui(Frame):
 	for i in range(20):
 		self.rowconfigure(i, weight=1)
 
-        lbl = Label(self, text="Registros                                      GDB en MIPS - MR3020")
+        lbl = Label(self, text="Registros")
         lbl.grid(row=1,column=2, sticky=W, pady=4, padx=5)
         
 
-        self.area1 = Text(self,height=12,width=80)
-        self.area1.grid(row=2, column=2, columnspan=1, rowspan=5, 
+        self.registros = Text(self,height=12,width=80)
+        self.registros.grid(row=2, column=2, columnspan=1, rowspan=5, 
             sticky=E+W+S+N)
         
-        lbl = Label(self, text="Programa en Assembler y Prorama Binario Decodificado")
+        lbl = Label(self, text="Programa en Assembler y Prorama Binario Decodificado (disassemble) ")
         lbl.grid(row=7, column=2, pady=1, padx=1, sticky=W+N+E+S)
         
-    	self.area2 = Text(self, height=6,width=80)
-        self.area2.grid(row=8, column=2, columnspan=1, rowspan=5, 
+    	self.programa = Text(self, height=6,width=80)
+        self.programa.grid(row=8, column=2, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
         lbl = Label(self, text='Memoria - Segmento de datos (debe existir la etiqueta "memoria") - Segmento de texto - Pila')
         lbl.grid(row=13, column=2, pady=1, padx=1, sticky=W+N+E+S)
 
-        self.area3 = Text(self,height=15,width=80)
-        self.area3.grid(row=14, column=2, columnspan=1, rowspan=5, 
+        self.memoria = Text(self,height=15,width=80)
+        self.memoria.grid(row=14, column=2, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
         lbl4 = Label(self, text="Mensajes de Depuracion")
         lbl4.grid(row=13, column=0, pady=1, padx=1, sticky=W+N+E+S)
 
-        self.area4 = Text(self,height=8,width=60)
-        self.area4.grid(row=14, column=0, columnspan=1, rowspan=5, 
+        self.mensajes = Text(self,height=8,width=60)
+        self.mensajes.grid(row=14, column=0, columnspan=1, rowspan=5, 
             padx=1, sticky=E+W+S+N)
 
         lbl = Label(self, text="Editor del Programa")
         lbl.grid(row=1,column=0, sticky=W, pady=4, padx=5) 
      
-	self.area5 = ScrolledText(self,height=20,width=60)
-	self.area5.grid(row=2, column=0, columnspan=1, rowspan=10, 
+	self.editor = ScrolledText(self,height=20,width=60)
+	self.editor.grid(row=2, column=0, columnspan=1, rowspan=10, 
             padx=1, sticky=E+W+S+N)
         
       
@@ -88,9 +88,9 @@ class MipsxTkGui(Frame):
 	filemenu = Menu(menu)
 
 	menu.add_cascade(label="Archivo", menu=filemenu)
-	filemenu.add_command(label="Nuevo", command=control.dummy)
-	filemenu.add_command(label="Abrir...", command=control.open_command)
-	filemenu.add_command(label="Guardar...", command=control.save_command)
+	filemenu.add_command(label="Nuevo", command=control.nuevo)
+	filemenu.add_command(label="Abrir...", command=control.abrir)
+	filemenu.add_command(label="Guardar...", command=control.guardar)
 	filemenu.add_separator()
 	filemenu.add_command(label="Salir", command=control.salir)
 
@@ -102,7 +102,7 @@ class MipsxTkGui(Frame):
 
 	helpmenu = Menu(menu)
 	menu.add_cascade(label="Ayuda", menu=helpmenu)
-	helpmenu.add_command(label="Acerca de...", command=control.about_command)
+	helpmenu.add_command(label="Acerca de...", command=control.acercade)
 	menu.add_command(label="Salir", command=control.salir)
 
     def limpiar_panel(self, panel):
@@ -119,10 +119,10 @@ class MipsxTkGui(Frame):
 
     # Al abrir un archivo deseamos tener un area de trabajo cero
     def limpiar_paneles(self):
-		self.area4.delete('1.0',END)
-		self.area3.delete('1.0',END)
-		self.area2.delete('1.0',END)
-		self.area1.delete('1.0',END)
+		self.mensajes.delete('1.0',END)
+		self.memoria.delete('1.0',END)
+		self.programa.delete('1.0',END)
+		self.registros.delete('1.0',END)
 
 
 
@@ -134,7 +134,9 @@ class MipsxControl(Frame):
     	self.paneles = MipsxTkGui(parent, self)
 
 	self.ejecucion = False
-	self.PUERTOyPS = str( random.randrange(4000,5000+1) )
+
+	# PUERTOyPS es usado para generar archivos temporales y puerto de conexion
+	self.PUERTOyPS = str( random.randrange(4000,8000+1) )
 
 	# Variables globales 
 	self.archivoactual = "hello.s"
@@ -144,18 +146,17 @@ class MipsxControl(Frame):
 	self.ip_mips = "10.0.15.50"
 	# ip_mips = "192.168.0.71"
 
-
-
+	# Abrimos el archivo base
  	self.abrir_en_editor("hello.s")
-
 	
+	# Si se finaliza el programa con click en el boton X llamamos a salir
 	root.protocol("WM_DELETE_WINDOW", self.salir)
 
 
     def prox_instruccion(self):
-		gdb.stdin.write('next\n')
 
-		self.mostrar_en(self.paneles.area4, "proximo")
+		gdb.stdin.write('next\n')
+		self.mostrar_en(self.paneles.mensajes, "proximo")
 
 		self.estado()
 		if self.ejecucion:
@@ -168,7 +169,6 @@ class MipsxControl(Frame):
 			self.prox_instruccion()
 
     def salida(self, w, findelinea):
-		# w.delete("1.0", END)
 		self.paneles.limpiar_panel(w)
 				
 		a = gdb.stdout.readline()
@@ -194,8 +194,7 @@ class MipsxControl(Frame):
 		
      		file = open("/tmp/archivotemp"+self.PUERTOyPS+".txt")
 	        contents = file.read()
-		# area4.insert(END,contents)
-		self.paneles.panel_agregar(self.paneles.area4, contents)
+		self.paneles.panel_agregar(self.paneles.mensajes, contents)
 		file.close()
 
 		
@@ -220,42 +219,39 @@ class MipsxControl(Frame):
 			gdb.stdin.write(solicitar_seg_de_datos)
 		gdb.stdin.write('x/50xw main\n')
 		gdb.stdin.write('x/40xw $sp\n')
-		self.mostrar_en(self.paneles.area3, "memoria")
+		self.mostrar_en(self.paneles.memoria, "memoria")
 	
 
     def estado(self):
 		gdb.stdin.write('info frame\n')
-		self.mostrar_en(self.paneles.area4, "estado")
+		self.mostrar_en(self.paneles.mensajes, "estado")
      		file = open("/tmp/archivotemp"+self.PUERTOyPS+".txt")
 	        contents = file.readline()
 		while not "Remote" in contents:
 			print contents
-			self.paneles.panel_agregar(self.paneles.area4, contents)
+			self.paneles.panel_agregar(self.paneles.mensajes, contents)
 	        	contents = file.readline()
 
-		self.paneles.panel_agregar(self.paneles.area4, "----------------------------------------\nSalida Estandar : \n\n")
+		self.paneles.panel_agregar(self.paneles.mensajes, "----------------------------------------\nSalida Estandar : \n\n")
 
 		contents = file.read()
 		file.close()
-		self.paneles.panel_agregar(self.paneles.area4, contents) 
-		# area4.insert(END,contents)
+		self.paneles.panel_agregar(self.paneles.mensajes, contents) 
 
 
     def registros(self):
 		gdb.stdin.write('info register\n')
-		self.mostrar_en(self.paneles.area1, "registros")
+		self.mostrar_en(self.paneles.registros, "registros")
 
 
     def listado(self):
 		gdb.stdin.write('list 1,100\n')
 		gdb.stdin.write('disas main\n')
-		self.mostrar_en(self.paneles.area2, "listado")
+		self.mostrar_en(self.paneles.programa, "listado")
 
     def compilarycargar(self):
-		# area4.delete('1.0',END)
-		self.paneles.limpiar_panel(self.paneles.area4)
-		# area4.insert('1.0',"Compilando y Cargando ...\r\n")
-		self.paneles.panel_agregar(self.paneles.area4, "Compilando y Cargando ...\r\n")
+		self.paneles.limpiar_panel(self.paneles.mensajes)
+		self.paneles.panel_agregar(self.paneles.mensajes, "Compilando y Cargando ...\r\n")
 		root.update_idletasks()
 
 		gdb.stdin.write('detach \n')
@@ -265,8 +261,7 @@ class MipsxControl(Frame):
 		self.mostrar_en_depuracion()
 
 		if tub.returncode == 0:
-			# area4.insert(END, "Compilacion y carga : OK\n")
-			self.paneles.panel_agregar(self.paneles.area4, "Compilacion y Carga OK\r\n")
+			self.paneles.panel_agregar(self.paneles.mensajes, "Compilacion y Carga OK\r\n")
 
 
 			ejecutable = self.archivoacompilar+".elf"
@@ -295,29 +290,26 @@ class MipsxControl(Frame):
 			gdb.stdin.write('continue\n')
 			self.ejecucion = True
 
-			self.mostrar_en(self.paneles.area4,"estado")
+			self.mostrar_en(self.paneles.mensajes,"estado")
 			self.memoria()
 			self.registros()
 			self.listado()
 		else:
-			# area4.insert(END, "ERROR al compilar y cargar")
-			self.paneles.panel_agregar(self.paneles.area4, "ERROR al compilar y cargar") 
+			self.paneles.panel_agregar(self.paneles.mensajes, "ERROR al compilar y cargar") 
 			mostrar_en_depuracion()
 
 
     def abrir_en_editor(self, archivo):
+
 		fd = open(archivo)      
 		contents = fd.read()
-		# area5.delete('1.0',END)
-		self.paneles.limpiar_panel(self.paneles.area5)
-	        #area5.insert('1.0',contents)
-		self.paneles.panel_agregar(self.paneles.area5, contents)
-
 	        fd.close()
-	        self.archivoactual = archivo
-		print self.archivoactual
 
-    def open_command(self):
+		self.paneles.limpiar_panel(self.paneles.editor)
+		self.paneles.panel_agregar(self.paneles.editor, contents)
+	        self.archivoactual = archivo
+
+    def abrir(self):
 		FILEOPENOPTIONS = dict(defaultextension='*.s',
                   filetypes=[('Archivo assembler','*.s'), ('Todos los archivos','*.*')])
 	        file = tkFileDialog.askopenfile(parent=root,mode='rb',title='Select a file',
@@ -334,8 +326,8 @@ class MipsxControl(Frame):
 		streamdata = tub.communicate()[0]
 		tmp = open(self.archivoacompilar, "w")
 	    	if tmp != None:
-	        	# data = area5.get('1.0', END+'-1c')
-	        	data = self.paneles.panel_leer(self.paneles.area5)
+	        	# data = editor.get('1.0', END+'-1c')
+	        	data = self.paneles.panel_leer(self.paneles.editor)
 	        	tmp.write(data)
 	        	tmp.close()
 
@@ -344,12 +336,12 @@ class MipsxControl(Frame):
 			streamdata = tub.communicate()[0]
 	
 
-    def save_command(self):
+    def guardar(self):
 	    file = tkFileDialog.asksaveasfile(mode='w')
 	    if file != None:
 	    # slice off the last character from get, as an extra return is added
-	        # data = area5.get('1.0', END+'-1c')
-	        data = self.paneles.panel_leer(self.paneles.area5)
+	        # data = editor.get('1.0', END+'-1c')
+	        data = self.paneles.panel_leer(self.paneles.editor)
 	        file.write(data)
 	        file.close()
 		self.archivoactual = file.name
@@ -359,44 +351,48 @@ class MipsxControl(Frame):
 	    if tkMessageBox.askokcancel("Quit", "Do you really want to quit?"):
 	        root.destroy()
 	 
-    def about_command(self):
+    def acercade(self):
 	    label = tkMessageBox.showinfo("Acerca de", "MIPSX - GUI for gdb multiarch\n\nEntorno de desarrollo en lenguaje assembler arquitectura MIPS\nEste programa ensabla, genera el programa ejecutable, y lo ejecuta en modo debug en una maquina MIPS real\n\nCopyright 2014 Rafael Ignacio Zurita\n\nFacultad de Informatica\nUniversidad Nacional del Comahue\n\nThis program is free software; you can redistribute it and/or modify it under the terms of the GPL v2")
 		         
  
-    def dummy(self):
-	    print "I am a Dummy Command, I will be removed in the next step"
+    def nuevo(self):
+		self.paneles.limpiar_panel(self.paneles.editor)
 
     def no_hacer_nada(self):
 		print "nada por hacer"
 
     def archivo_sin_guardar(self):
-		# data = area5.get('1.0', END+'-1c')
-		data = self.paneles.panel_leer(self.paneles.area5)
+
+		data = self.paneles.panel_leer(self.paneles.editor)
+
 		fd = open(self.archivoactual)      
 		contents = fd.read()
 	        fd.close()
+
 		if data == contents:
 			return False
+
 		res = tkMessageBox.askquestion("Confirmar", "Archivo sin guardar\nEsta seguro de finalizar el programa?", icon='warning')
 		if res == 'yes':
 			return False
+
 		return True
 
     def salir(self):
 		if self.archivo_sin_guardar():
 			return
+
 		ip_mips = "10.0.15.50"
 		tub = Popen(['mipsx_finalizar_gdbserver.sh', ip_mips, self.PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 
+		# Borrar todos los temporales
 		tmp = "/tmp/archivo"+self.PUERTOyPS+".s"
 		tmp2 = "archivo"+self.PUERTOyPS+".s"
 		tmp3 = "/tmp/archivo"+self.PUERTOyPS+".s.elf"
 		tmp4 = "/tmp/archivotemp"+self.PUERTOyPS+".txt"
 		tub = Popen(['rm', tmp, tmp2, tmp3, tmp4], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
-
-
 
 		quit()
 
@@ -410,8 +406,6 @@ class MipsxControl(Frame):
 def main():
   
 	root.mainloop()  
-
-
 
 
 
