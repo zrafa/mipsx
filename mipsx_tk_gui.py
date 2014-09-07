@@ -194,8 +194,9 @@ class MipsxControl(Frame):
 		
      		file = open("/tmp/archivotemp"+self.PUERTOyPS+".txt")
 	        contents = file.read()
-		self.paneles.panel_agregar(self.paneles.mensajes, contents)
 		file.close()
+
+		self.paneles.panel_agregar(self.paneles.mensajes, contents)
 
 		
 
@@ -254,12 +255,14 @@ class MipsxControl(Frame):
 		self.paneles.panel_agregar(self.paneles.mensajes, "Compilando y Cargando ...\r\n")
 		root.update_idletasks()
 
+		# Nos liberamos del debugging actual
 		gdb.stdin.write('detach \n')
 		self.guardar_archivo_a_compilar()
 		tub = Popen(['mipsx_compilarycargar.sh', self.archivoacompilar, self.PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		self.mostrar_en_depuracion()
 
+		# Si la compilacion y carga no tuvo errores
 		if tub.returncode == 0:
 			self.paneles.panel_agregar(self.paneles.mensajes, "Compilacion y Carga OK\r\n")
 
