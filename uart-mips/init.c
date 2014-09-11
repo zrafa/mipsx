@@ -1,3 +1,15 @@
+
+/*
+ * uart-mips : ejemplo de programa en lenguaje ensamblador MIPS para
+ * acceder a los registros uart de la placa SIE, y realizar E/S.
+ *
+ * Copyright (C) 2014 Rafael Ignacio Zurita <rafa@fi.uncoma.edu.ar>
+ *
+ *   mipsx and examples are free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version. Check COPYING file.
+ */
 #include <unistd.h>
 #include <stdint.h>
 #include <stdlib.h>
