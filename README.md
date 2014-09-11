@@ -8,6 +8,15 @@ Originalmente pensada para programar en lenguaje ensamblador de MIPS
 y realizar verificacion de los programas en maquinas reales 
 MIPS y MIPSEL.
 
+```
+ * Copyright (C) 2014 Rafael Ignacio Zurita <rafa@fi.uncoma.edu.ar>
+ *
+ *   mipsx and examples are free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version. Check COPYING file.
+```
+
 Hemos testeado en qemu-mips, qemu-mipsel, Ben Nanonote (mipsel)
 tplink mr3020 (mips), board SIE (mipsel)
 

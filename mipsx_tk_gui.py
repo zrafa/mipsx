@@ -5,8 +5,11 @@
 Autor original del ejemplo de una aplicacion Tk: Jan Bodnar
 last modified: December 2010
 website: www.zetcode.com
+
 Modificado y ampliado para ser una GUI de GDB para MIPS. 
 (C) 2014 - Rafael Ignacio Zurita <rafa@fi.uncoma.edu.ar>
+
+Lea el archivo README.md para conocer la licencia de este programa.
 """
 
 import time
