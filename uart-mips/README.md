@@ -7,6 +7,7 @@ El programa ensamblador utiliza dicha direccion para acceder a los registros UAR
 
 El programa se compila con make, y ha sido testeado contra una terminal DEC vt320 y minicom.
 
+El ejemplo puede ser utilizado como base para las prácticas de laboratorio del tema Entrada/Salida.
 
 
 
