@@ -17,8 +17,8 @@ MIPS y MIPSEL.
  *   (at your option) any later version. Check COPYING file.
 ```
 
-Hemos testeado en qemu-mips, qemu-mipsel, Ben Nanonote (mipsel)
-tplink mr3020 (mips), board SIE (mipsel)
+Hemos testeado en qemu-mips, qemu-mipsel, Ben Nanonote (mipsel hw real)
+tplink mr3020 (mips big endianhw real), board SIE (mipsel little endian hw real)
 
 Cada vez que el alumno realiza un click en "compilar y cargar" el
 archivo fuente es ensamblado y vinculado en la maquina MIPS remota.
@@ -37,6 +37,13 @@ ejecuta su programa es :
 - La memoria, que incluye, el segmento de datos, de texto y la pila.
 - Mensajes de depuracion de gdb, indicando el estado de ejecucion del programa en curso.
 - Panel de edicio del archivo fuente.
+
+De esta manera, la aplicación permita la programación en lenguaje ensamblador
+en un editor grafico. Además, la aplicación utiliza el ensamblador GNU as, el vinculador
+GNU ld y el programa de debug gdb. Todos estos programas son el estandar
+en la industria, por lo que el alumno puede observar y verificar
+la ejecucion de sus programas en CPU MIPS reales, utilizando la informacion
+provista por programas de desarrollo estandar.
 
 Requisitos
 ----------
@@ -62,8 +69,10 @@ Screenshot
 Extras
 ------
 
-Hay una seria de programas reales ejemplos, en lenguaje ensamblador mips.
-En particular, un hello.s (hello world). Un programa ejemplo para utilizar una llamada al sistema, y mostrar un caracter por la salida estandar.
+Hay una seria de programas reales ejemplos, en lenguaje ensamblador mips:
+
+- Un hello.s (hello world). 
+- Dos programas ejemplo para utilizar llamadas al sistema Ln , y mostrar un caracter por la salida estandar.
 El directorio ``` uart-mips ``` con un programa verificado que mapea la direccion del registro base UART de la board SIE a una palabra etiquetada del segmento de datos de un programa en lenguaje ensamblador mips. Luego, el programa ensamblador utiliza dicha direccion para acceder a los registros UART y enviar/leer caracteres asciis.
 
 
