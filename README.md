@@ -72,7 +72,7 @@ Extras
 Hay una seria de programas reales ejemplos, en lenguaje ensamblador mips:
 
 - Un hello.s (hello world). 
-- Dos programas ejemplo para utilizar llamadas al sistema Ln , y mostrar un caracter por la salida estandar.
-El directorio ``` uart-mips ``` con un programa verificado que mapea la direccion del registro base UART de la board SIE a una palabra etiquetada del segmento de datos de un programa en lenguaje ensamblador mips. Luego, el programa ensamblador utiliza dicha direccion para acceder a los registros UART y enviar/leer caracteres asciis.
+- Dos programas ejemplo para utilizar llamadas al sistema Linux, y mostrar caracteres en salida estandar.
+- Entrada y Salida programada : El directorio ``` uart-mips ``` contiene un programa verificado que mapea la direccion del registro base UART de la board SIE a una palabra etiquetada del segmento de datos de un programa en lenguaje ensamblador mips. Luego, el programa ensamblador utiliza dicha direccion para acceder a los registros UART y enviar/leer caracteres asciis.
 
 
