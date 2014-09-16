@@ -35,8 +35,8 @@ ejecuta su programa es :
 - Archivo binario decodificado (disassemble), util para verificar como se implementan las pseudoinstrucciones en instrucciones reales.
 - Los registros de la CPU MIPS y su contenido.
 - La memoria, que incluye, el segmento de datos, de texto y la pila.
-- Mensajes de depuracion de gdb, indicando el estado de ejecucion del programa en curso.
-- Panel de edicio del archivo fuente.
+- Mensajes de depuracion de GNU as, ld y gdb, indicando el estado de la ejecucion del programa en curso.
+- Panel de edición del archivo fuente.
 
 De esta manera, la aplicación permita la programación en lenguaje ensamblador
 en un editor grafico. Además, la aplicación utiliza el ensamblador GNU as, el vinculador
