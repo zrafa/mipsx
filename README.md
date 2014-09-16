@@ -34,7 +34,7 @@ ejecuta su programa es :
 - Listado del programa con lineas numeradas.
 - Archivo binario decodificado (disassemble), util para verificar como se implementan las pseudoinstrucciones en instrucciones reales.
 - Los registros de la CPU MIPS y su contenido.
-- La memoria, que incluye, el segmento de datos, de texto y la pila.
+- La memoria, que incluye, los diferentes segmentos de datos, de texto y la pila.
 - Mensajes de depuracion de GNU as, ld y gdb, indicando el estado de la ejecucion del programa en curso.
 - Panel de edición del archivo fuente.
 
