@@ -17,8 +17,8 @@ MIPS y MIPSEL.
  *   (at your option) any later version. Check COPYING file.
 ```
 
-Hemos testeado en qemu-mips, qemu-mipsel, computadora Ben Nanonote (hw mipsel)
-tplink mr3020 (hw mips big endian hw), board SIE (hw mipsel little endian).
+Hemos testeado esta aplicación contra equipos remotos de arquitectura MIPS, reales y emulados. En particular, se ha verificado su uso contra qemu-mips y qemu-mipsel (ambos con sistema DEBIAN GNU/Linux), computadora Ben Nanonote (hw mipsel)
+tplink mr3020 (hw mips big endian hw), y board SIE (hw mipsel little endian).
 
 Cada vez que el alumno realiza un click en "compilar y cargar" el
 archivo fuente es ensamblado y vinculado en la maquina MIPS remota.
