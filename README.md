@@ -59,6 +59,10 @@ Se necesita que en la maquina destino el usuario root tenga como clave root (con
 Memory layout
 http://www.dirac.org/linux/gdb/02a-Memory_Layout_And_The_Stack.php
 
+Uso
+---
+
+Ejecutar con un interprete de python ```mipsx_tk_gui.py``` 
 
 Screenshot
 ----------
