@@ -17,8 +17,8 @@ MIPS y MIPSEL.
  *   (at your option) any later version. Check COPYING file.
 ```
 
-Hemos testeado en qemu-mips, qemu-mipsel, Ben Nanonote (mipsel hw real)
-tplink mr3020 (mips big endianhw real), board SIE (mipsel little endian hw real)
+Hemos testeado en qemu-mips, qemu-mipsel, computadora Ben Nanonote (hw mipsel)
+tplink mr3020 (hw mips big endian hw), board SIE (hw mipsel little endian).
 
 Cada vez que el alumno realiza un click en "compilar y cargar" el
 archivo fuente es ensamblado y vinculado en la maquina MIPS remota.
@@ -42,22 +42,19 @@ De esta manera, la aplicación permita la programación en lenguaje ensamblador
 en un editor grafico. Además, la aplicación utiliza el ensamblador GNU as, el vinculador
 GNU ld y el programa de debug gdb. Todos estos programas son el estandar
 en la industria, por lo que el alumno puede observar y verificar
-la ejecucion de sus programas en CPU MIPS reales, utilizando la informacion
+la ejecucion de sus programas en CPUs MIPS, utilizando la informacion
 provista por programas de desarrollo estandar.
 
 Requisitos
 ----------
 
 Se necesita tener instalado :
-
 sshpass
 python-tk
 gdb-multiarch
 
 Se necesita que en la maquina destino el usuario root tenga como clave root (configurable).
 
-Memory layout
-http://www.dirac.org/linux/gdb/02a-Memory_Layout_And_The_Stack.php
 
 Uso
 ---
@@ -73,7 +70,7 @@ Screenshot
 Extras
 ------
 
-Hay una seria de programas reales ejemplos, en lenguaje ensamblador mips:
+Hay una seria de programas ejemplos, en lenguaje ensamblador mips:
 
 - Un hello.s (hello world). 
 - Dos programas ejemplo para utilizar llamadas al sistema Linux, y mostrar caracteres en salida estandar.
