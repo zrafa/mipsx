@@ -1,7 +1,7 @@
 mipsx
 =====
 
-El programa mipsx es una interfaz grafica para desarrollar programas en lenguaje ensamblador MIPS. Trabaja en conjunto con sistemas MIPS emulados y reales.
+mipsx es una interfaz grafica para desarrollar programas en lenguaje ensamblador MIPS. Trabaja en conjunto con sistemas MIPS emulados y reales.
 
 mipsx permite ensamblar y vincular los programas desarrollados. Tambien ejecutar, y al mismo tiempo analizar, los programas compilados a través del debugger gdb. A partir de estas características, es posible realizar todo el proceso de desarrollo y verificación de programas en lenguaje ensamblador con una única herramienta, mientras que los programas pueden ser ejecutados y analizados en diferentes sistemas MIPS.
 
