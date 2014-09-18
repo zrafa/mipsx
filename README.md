@@ -1,12 +1,12 @@
 mipsx
 =====
 
+El programa mipsx es una interfaz grafica para desarrollar programas en lenguaje ensamblador MIPS. Trabaja en conjunto con sistemas MIPS emulados y reales.
+
+mipsx permite ensamblar y vincular los programas desarrollados. Tambien ejecutar, y al mismo tiempo analizar, los programas compilados a través del debugger gdb. A partir de estas características, es posible realizar todo el proceso de desarrollo y verificación de programas en lenguaje ensamblador con una única herramienta, mientras que los programas pueden ser ejecutados y analizados en diferentes sistemas MIPS.
+
 Una aplicacion grafica para programar en lenguaje ensamblador (entorno
 de desarrollo) de una arquitectura remota, y hacer debug de los programas.
-
-Originalmente pensada para programar en lenguaje ensamblador de MIPS
-y realizar verificacion de los programas en maquinas reales 
-MIPS y MIPSEL.
 
 ```
  * Copyright (C) 2014 Rafael Ignacio Zurita <rafa@fi.uncoma.edu.ar>
@@ -17,7 +17,10 @@ MIPS y MIPSEL.
  *   (at your option) any later version. Check COPYING file.
 ```
 
-Hemos testeado esta aplicación contra equipos remotos de arquitectura MIPS, reales y emulados. En particular, se ha verificado su uso contra qemu-mips y qemu-mipsel (ambos con sistema DEBIAN GNU/Linux), computadora Ben Nanonote (hw mipsel)
+Originalmente pensada para programar en lenguaje ensamblador de MIPS
+aunque la aplicación puede ser utilizada para programar en lenguaje ensamblador (entorno de desarrollo) de otras arquitecturas remotas.
+
+mipsx fue verificado contra equipos remotos de arquitectura MIPS, reales y emulados. En particular, se ha verificado su uso contra qemu-mips y qemu-mipsel (ambos con sistema DEBIAN GNU/Linux), computadora Ben Nanonote (hw mipsel)
 tplink mr3020 (hw mips big endian hw), y board SIE (hw mipsel little endian).
 
 Cada vez que el alumno realiza un click en "compilar y cargar" el
