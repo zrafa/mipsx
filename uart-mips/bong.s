@@ -15,9 +15,9 @@
 
 		.data
 uart_reg_base:	.word 0
-paletas:	.word 5, 0
+paletas:	.word 5, 5
 
-cadena:		.asciiz "Hola mundo"
+bienvenida:	.asciiz "Hola mundo en MIPS - Placa electronica SIE XBurst CPU MIPS32v2"
 tecla:		.word 0
 
 
@@ -30,6 +30,13 @@ main:
 	la $t0, uart_reg_base
 	lw $t0, 0($t0)
 
+	jal secuencia_de_escape
+	jal mover_cursor_1_1
+
+	jal secuencia_de_escape
+	jal limpiar_pantalla
+	jal imprimir_bienvenida
+
 bucle:
 	jal detectar_entrada
 	jal analizar_tecla
@@ -37,13 +44,17 @@ bucle:
 	jal secuencia_de_escape
 	jal mover_cursor_1_1
 
-	jal secuencia_de_escape
-	jal limpiar_pantalla
+#	jal secuencia_de_escape
+#	jal limpiar_pantalla
 
 #	jal secuencia_de_escape
 #	jal reverso
 
 	
+	jal secuencia_de_escape
+	jal mover_paleta_anterior
+	jal pintar_paleta_espacio
+
 	jal secuencia_de_escape
 	jal mover_paleta
 	jal pintar_paleta
@@ -58,7 +69,7 @@ bucle:
 
 
 dormir:
-	li $t3, 0xFFFFFF
+	li $t3, 0xFFFFF
 repetir:
 	addi $t3, $t3, -1
 	bne $t3, $zero, repetir
@@ -129,13 +140,16 @@ analizar_tecla:
 tecla_a:
 	lw $t1, paletas
 	beq $t1, $zero, salir_analizar_tecla
+	sw $t1, paletas+4
 	addi $t1, $t1, -1
 	sw $t1, paletas
 	jr $ra
 
 tecla_z:
 	lw $t1, paletas
-	beq $t1, 0x14, salir_analizar_tecla
+	li $t2, 0xA
+	beq $t1, $t2, salir_analizar_tecla
+	sw $t1, paletas+4
 	addi $t1, $t1, 1
 	sw $t1, paletas
 	jr $ra
@@ -155,34 +169,55 @@ limpiar_pantalla:
 	
 
 mover_paleta:
-	lw $t1, paletas
-	beq $t1, $zero, salir_mover_paleta
 
-bucle_mover_paleta:
-	# Esto esta imprimiendo los numeros al reves!
-	rem $t3, $t1, 10
-	addi $t3, $t3,0x30
+	li $t3, 0x31
 	add $s0, $ra, 0
 	jal imprimir_caracter
 	add $ra, $s0, 0
-	div $t1, $t1, 10
-	beq $t1, $zero, salir_mover_paleta
-	j bucle_mover_paleta
 
-salir_mover_paleta:
+	lw $t3, paletas
+	addi $t3, $t3, 0x30
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+
+	jr $ra
+
+mover_paleta_anterior:
+
+	li $t3, 0x31
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+
+	lw $t3, paletas+4
+	addi $t3, $t3, 0x30
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+
 	jr $ra
 
 
+pintar_paleta_espacio:
+	li $t3, 0x3b
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+
+	li $t3, 0x48
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+
+	# Dibujamos un espacio en reverso
+	li $t3, 0x20
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	jr $ra
+	
 pintar_paleta:
-#	lw $t1, paletas
-
-	# nos movemos al lugar
-##	addi $t3, $t1, 0x2f
-#	li $t3, 0x35
-#	add $s0, $ra, 0
-#	jal imprimir_caracter
-#	add $ra, $s0, 0
-
 	li $t3, 0x3b
 	add $s0, $ra, 0
 	jal imprimir_caracter
@@ -195,7 +230,7 @@ pintar_paleta:
 
 	
 	# Dibujamos un espacio en reverso
-	li $t3, 0x20
+	li $t3, 0x40
 	add $s0, $ra, 0
 	jal imprimir_caracter
 	add $ra, $s0, 0
@@ -212,16 +247,19 @@ mover_cursor_1_1:
 	add $ra, $s0, 0
 	jr $ra
 
-imprimir_cadena:
+imprimir_bienvenida:
+	la $t4, bienvenida
+
+bucle_imprimir_bienvenida:
 	lb $t3, ($t4)
 	add $t6, $ra, 0
 	jal imprimir_caracter
 	add $ra, $t6, 0
 	addi $t4, $t4, 1
-	bne $t3, $zero, imprimir_cadena
-	
+	bne $t3, $zero, bucle_imprimir_bienvenida
 
-	jal uartmips_exit
+	#jal uartmips_exit
+	jr $ra
 
 # Imprimir caracter
 imprimir_caracter:
