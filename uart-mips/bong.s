@@ -33,15 +33,72 @@ main:
 bucle:
 	jal detectar_entrada
 	jal analizar_tecla
+
+	jal secuencia_de_escape
 	jal mover_cursor_1_1
+
+	jal secuencia_de_escape
 	jal limpiar_pantalla
+
+#	jal secuencia_de_escape
+#	jal reverso
+
+	
+	jal secuencia_de_escape
+	jal mover_paleta
 	jal pintar_paleta
+
+	jal dormir
 	#jal imprimir_caracter
 
 	#jal imprimir_caracter
 
 	# jal uartmips_exit
 	j bucle
+
+
+dormir:
+	li $t3, 0xFFFFFF
+repetir:
+	addi $t3, $t3, -1
+	bne $t3, $zero, repetir
+	jr $ra
+
+secuencia_de_escape:
+	li $t3, 0x1B
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	li $t3, 0x5b
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	jr $ra
+
+reverso:
+	# ESC[7m
+	li $t3, 0x37
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	li $t3, 0x6d
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+
+	jr $ra
+
+quitarreverso:
+	# ESC[(0
+	li $t3, 0x28
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	li $t3, 0x30
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	jr $ra
 
 
 detectar_entrada:
@@ -90,14 +147,6 @@ salir_analizar_tecla:
 	jr $ra
 	
 limpiar_pantalla:
-	li $t3, 0x1B
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-	li $t3, 0x5b
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
 	li $t3, 0x4A
 	add $s0, $ra, 0
 	jal imprimir_caracter
@@ -105,22 +154,34 @@ limpiar_pantalla:
 	jr $ra
 	
 
-pintar_paleta:
+mover_paleta:
 	lw $t1, paletas
-	li $t3, 0x1B
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
+	beq $t1, $zero, salir_mover_paleta
 
-	li $t3, 0x5b
+bucle_mover_paleta:
+	# Esto esta imprimiendo los numeros al reves!
+	rem $t3, $t1, 10
+	addi $t3, $t3,0x30
 	add $s0, $ra, 0
 	jal imprimir_caracter
 	add $ra, $s0, 0
+	div $t1, $t1, 10
+	beq $t1, $zero, salir_mover_paleta
+	j bucle_mover_paleta
 
-	addi $t3, $t1, 0x2f
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
+salir_mover_paleta:
+	jr $ra
+
+
+pintar_paleta:
+#	lw $t1, paletas
+
+	# nos movemos al lugar
+##	addi $t3, $t1, 0x2f
+#	li $t3, 0x35
+#	add $s0, $ra, 0
+#	jal imprimir_caracter
+#	add $ra, $s0, 0
 
 	li $t3, 0x3b
 	add $s0, $ra, 0
@@ -133,21 +194,14 @@ pintar_paleta:
 	add $ra, $s0, 0
 
 	
-	li $t3, 0x29
+	# Dibujamos un espacio en reverso
+	li $t3, 0x20
 	add $s0, $ra, 0
 	jal imprimir_caracter
 	add $ra, $s0, 0
 	jr $ra
 	
 mover_cursor_1_1:
-	li $t3, 0x1b
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-	li $t3, 0x5b
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
 	li $t3, 0x3b
 	add $s0, $ra, 0
 	jal imprimir_caracter
