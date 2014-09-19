@@ -47,17 +47,23 @@ bucle:
 #	jal secuencia_de_escape
 #	jal limpiar_pantalla
 
-#	jal secuencia_de_escape
-#	jal reverso
 
 	
+	jal secuencia_de_escape
+	jal quitar_reverso
+
 	jal secuencia_de_escape
 	jal mover_paleta_anterior
 	jal pintar_paleta_espacio
 
 	jal secuencia_de_escape
+	jal reverso
+	jal secuencia_de_escape
 	jal mover_paleta
 	jal pintar_paleta
+
+	jal secuencia_de_escape
+	jal mover_cursor_10_10
 
 	jal dormir
 	#jal imprimir_caracter
@@ -99,13 +105,13 @@ reverso:
 
 	jr $ra
 
-quitarreverso:
-	# ESC[(0
-	li $t3, 0x28
+quitar_reverso:
+	# ESC[0m
+	li $t3, 0x30
 	add $s0, $ra, 0
 	jal imprimir_caracter
 	add $ra, $s0, 0
-	li $t3, 0x30
+	li $t3, 0x6d
 	add $s0, $ra, 0
 	jal imprimir_caracter
 	add $ra, $s0, 0
@@ -147,7 +153,7 @@ tecla_a:
 
 tecla_z:
 	lw $t1, paletas
-	li $t2, 0xA
+	li $t2, 0x9
 	beq $t1, $t2, salir_analizar_tecla
 	sw $t1, paletas+4
 	addi $t1, $t1, 1
@@ -236,6 +242,25 @@ pintar_paleta:
 	add $ra, $s0, 0
 	jr $ra
 	
+mover_cursor_10_10:
+	li $t3, 0x31
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	li $t3, 0x30
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	li $t3, 0x3b
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	li $t3, 0x48
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	jr $ra
+
 mover_cursor_1_1:
 	li $t3, 0x3b
 	add $s0, $ra, 0
