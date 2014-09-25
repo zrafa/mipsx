@@ -133,7 +133,8 @@ class Mipsx(Frame):
 
 	def listado():
 		p.stdin.write('list 1,100\n')
-		p.stdin.write('disas main \n')
+		# p.stdin.write('disas main \n')
+		p.stdin.write('disas \n')
 		mostrar_en(area2, "listado")
 
 	def compilarycargar():

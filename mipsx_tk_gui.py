@@ -250,7 +250,8 @@ class MipsxControl(Frame):
 
     def listado(self):
 		gdb.stdin.write('list 1,100\n')
-		gdb.stdin.write('disas main\n')
+		# gdb.stdin.write('disas main\n')
+		gdb.stdin.write('disas \n')
 		self.mostrar_en(self.paneles.programa, "listado")
 
     def compilarycargar(self):
