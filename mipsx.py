@@ -335,15 +335,17 @@ class Mipsx(Frame):
 	def salir():
 		if archivo_sin_guardar():
 			return
-		ip_mips = "10.0.15.50"
-		tub = Popen(['mipsx_finalizar_gdbserver.sh', ip_mips, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-		streamdata = tub.communicate()[0]
 
 		tmp = "/tmp/archivo"+PUERTOyPS+".s"
 		tmp2 = "archivo"+PUERTOyPS+".s"
 		tmp3 = "/tmp/archivo"+PUERTOyPS+".s.elf"
 		tmp4 = "/tmp/archivotemp"+PUERTOyPS+".txt"
 		tub = Popen(['rm', tmp, tmp2, tmp3, tmp4], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		streamdata = tub.communicate()[0]
+
+		tmp2 = "/tmp/archivo"+PUERTOyPS+".s.o"
+		ip_mips = "10.0.15.50"
+		tub = Popen(['mipsx_finalizar_gdbserver.sh', ip_mips, PUERTOyPS, tmp, tmp2, tmp3, tmp4], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		# ip_mips = "10.0.15.232"
 		# ip_mips = "192.168.0.71"

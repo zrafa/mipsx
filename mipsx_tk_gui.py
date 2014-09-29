@@ -389,9 +389,9 @@ class MipsxControl(Frame):
 		if self.archivo_sin_guardar():
 			return
 
-		ip_mips = "10.0.15.50"
-		tub = Popen(['mipsx_finalizar_gdbserver.sh', ip_mips, self.PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-		streamdata = tub.communicate()[0]
+#		ip_mips = "10.0.15.50"
+#		tub = Popen(['mipsx_finalizar_gdbserver.sh', ip_mips, self.PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+#		streamdata = tub.communicate()[0]
 
 		# Borrar todos los temporales
 		tmp = "/tmp/archivo"+self.PUERTOyPS+".s"
@@ -400,6 +400,12 @@ class MipsxControl(Frame):
 		tmp4 = "/tmp/archivotemp"+self.PUERTOyPS+".txt"
 		tub = Popen(['rm', tmp, tmp2, tmp3, tmp4], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
+
+
+                tmp2 = "/tmp/archivo"+PUERTOyPS+".s.o"
+                ip_mips = "10.0.15.50"
+                tub = Popen(['mipsx_finalizar_gdbserver.sh', ip_mips, PUERTOyPS, tmp, tmp2, tmp3, tmp4], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+                streamdata = tub.communicate()[0]
 
 		quit()
 
