@@ -24,6 +24,7 @@ tecla:		.word 0
 
 limpiar_pantalla:	.byte 0x1B, 0x5B, 0x32, 0x4A, 0x00
 cursor_10_1:	.byte 0x1B, 0x5B, 0x31, 0x30, 0x3B, 0x48, 0x00
+cursor_10_10:	.byte 0x1B, 0x5B, 0x31, 0x3B, 0x38, 0x30, 0x48, 0x00
 reverso:	.byte 0x1B, 0x5B, 0x37, 0x6D, 0x00
 quitar_reverso:	.byte 0x1B, 0x5B, 0x30, 0x6D, 0x00
 fin_seq_esc_mover:	.byte 0x3B, 0x48, 0x00
@@ -46,10 +47,7 @@ bucle:
 	jal detectar_entrada
 	jal analizar_tecla
 
-#	jal secuencia_de_escape
-#	jal mover_cursor_1_1
 
-	jal secuencia_de_escape
 	jal reverso_off
 
 	jal secuencia_de_escape
@@ -57,7 +55,6 @@ bucle:
 	jal enviar_fin_seq_esc_mover
 	jal pintar_paleta_espacio
 
-#	jal secuencia_de_escape
 	jal reverso_on
 	jal secuencia_de_escape
 	jal mover_paleta
@@ -66,18 +63,12 @@ bucle:
 
 
 
-	jal secuencia_de_escape
-	jal reverso_off
+# 	jal secuencia_de_escape
+# 	jal reverso_off
 
-	jal secuencia_de_escape
-	jal mover_cursor_10_10
+	# jal mover_cursor_10_10
 
 	jal dormir
-	#jal imprimir_caracter
-
-	#jal imprimir_caracter
-
-	# jal uartmips_exit
 	j bucle
 
 
@@ -215,32 +206,9 @@ pintar_paleta:
 	jr $ra
 	
 mover_cursor_10_10:
-	li $t3, 0x3b
+	la $t4, cursor_10_10
 	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-	li $t3, 0x38
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-	li $t3, 0x30
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-	li $t3, 0x48
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-	jr $ra
-
-mover_cursor_1_1:
-	li $t3, 0x3b
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-	li $t3, 0x48
-	add $s0, $ra, 0
-	jal imprimir_caracter
+	jal bucle_imprimir
 	add $ra, $s0, 0
 	jr $ra
 
