@@ -16,10 +16,17 @@
 		.data
 uart_reg_base:	.word 0
 paletas:	.word 5, 5
+pelota:		.word 0
+mover_pelota:	.word 1
 
 bienvenida:	.asciiz "Hola mundo en MIPS - Placa electronica SIE XBurst CPU MIPS32v2"
 tecla:		.word 0
 
+limpiar_pantalla:	.byte 0x1B, 0x5B, 0x32, 0x4A, 0x00
+cursor_10_1:	.byte 0x1B, 0x5B, 0x31, 0x30, 0x3B, 0x48, 0x00
+reverso:	.byte 0x1B, 0x5B, 0x37, 0x6D, 0x00
+quitar_reverso:	.byte 0x1B, 0x5B, 0x30, 0x6D, 0x00
+fin_seq_esc_mover:	.byte 0x3B, 0x48, 0x00
 
 		.text
 		.global main
@@ -30,37 +37,37 @@ main:
 	la $t0, uart_reg_base
 	lw $t0, 0($t0)
 
-	jal secuencia_de_escape
-	jal mover_cursor_1_1
 
-	jal secuencia_de_escape
-	jal limpiar_pantalla
+	jal enviar_limpiar_pantalla
+	jal mover_cursor_10_1
 	jal imprimir_bienvenida
 
 bucle:
 	jal detectar_entrada
 	jal analizar_tecla
 
-	jal secuencia_de_escape
-	jal mover_cursor_1_1
-
 #	jal secuencia_de_escape
-#	jal limpiar_pantalla
+#	jal mover_cursor_1_1
 
-
-	
 	jal secuencia_de_escape
-	jal quitar_reverso
+	jal reverso_off
 
 	jal secuencia_de_escape
 	jal mover_paleta_anterior
+	jal enviar_fin_seq_esc_mover
 	jal pintar_paleta_espacio
 
-	jal secuencia_de_escape
-	jal reverso
+#	jal secuencia_de_escape
+	jal reverso_on
 	jal secuencia_de_escape
 	jal mover_paleta
+	jal enviar_fin_seq_esc_mover
 	jal pintar_paleta
+
+
+
+	jal secuencia_de_escape
+	jal reverso_off
 
 	jal secuencia_de_escape
 	jal mover_cursor_10_10
@@ -92,31 +99,21 @@ secuencia_de_escape:
 	add $ra, $s0, 0
 	jr $ra
 
-reverso:
+reverso_on:
 	# ESC[7m
-	li $t3, 0x37
+	la $t4, reverso
 	add $s0, $ra, 0
-	jal imprimir_caracter
+	jal bucle_imprimir
 	add $ra, $s0, 0
-	li $t3, 0x6d
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-
 	jr $ra
 
-quitar_reverso:
+reverso_off:
 	# ESC[0m
-	li $t3, 0x30
+	la $t4, quitar_reverso
 	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-	li $t3, 0x6d
-	add $s0, $ra, 0
-	jal imprimir_caracter
+	jal bucle_imprimir
 	add $ra, $s0, 0
 	jr $ra
-
 
 detectar_entrada:
 	lw $t1, 0x14($t0)	# reg_base + 0x14 es registro status en jz4740
@@ -166,21 +163,15 @@ tecla_z:
 salir_analizar_tecla:
 	jr $ra
 	
-limpiar_pantalla:
-	li $t3, 0x4A
+enviar_limpiar_pantalla:
+	la $t4, limpiar_pantalla
 	add $s0, $ra, 0
-	jal imprimir_caracter
+	jal bucle_imprimir
 	add $ra, $s0, 0
 	jr $ra
 	
 
 mover_paleta:
-
-	li $t3, 0x31
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-
 	lw $t3, paletas
 	addi $t3, $t3, 0x30
 	add $s0, $ra, 0
@@ -190,12 +181,6 @@ mover_paleta:
 	jr $ra
 
 mover_paleta_anterior:
-
-	li $t3, 0x31
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-
 	lw $t3, paletas+4
 	addi $t3, $t3, 0x30
 	add $s0, $ra, 0
@@ -206,16 +191,6 @@ mover_paleta_anterior:
 
 
 pintar_paleta_espacio:
-	li $t3, 0x3b
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-
-	li $t3, 0x48
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-
 	# Dibujamos un espacio en reverso
 	li $t3, 0x20
 	add $s0, $ra, 0
@@ -223,17 +198,14 @@ pintar_paleta_espacio:
 	add $ra, $s0, 0
 	jr $ra
 	
+enviar_fin_seq_esc_mover:
+	la $t4, fin_seq_esc_mover
+	add $s0, $ra, 0
+	jal bucle_imprimir
+	add $ra, $s0, 0
+	jr $ra
+
 pintar_paleta:
-	li $t3, 0x3b
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-
-	li $t3, 0x48
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-
 	
 	# Dibujamos un espacio en reverso
 	li $t3, 0x40
@@ -243,15 +215,15 @@ pintar_paleta:
 	jr $ra
 	
 mover_cursor_10_10:
-	li $t3, 0x31
+	li $t3, 0x3b
+	add $s0, $ra, 0
+	jal imprimir_caracter
+	add $ra, $s0, 0
+	li $t3, 0x38
 	add $s0, $ra, 0
 	jal imprimir_caracter
 	add $ra, $s0, 0
 	li $t3, 0x30
-	add $s0, $ra, 0
-	jal imprimir_caracter
-	add $ra, $s0, 0
-	li $t3, 0x3b
 	add $s0, $ra, 0
 	jal imprimir_caracter
 	add $ra, $s0, 0
@@ -272,16 +244,23 @@ mover_cursor_1_1:
 	add $ra, $s0, 0
 	jr $ra
 
+mover_cursor_10_1:
+	la $t4, cursor_10_1
+	add $s0, $ra, 0
+	jal bucle_imprimir
+	add $ra, $s0, 0
+	jr $ra
+
 imprimir_bienvenida:
 	la $t4, bienvenida
 
-bucle_imprimir_bienvenida:
+bucle_imprimir:
 	lb $t3, ($t4)
 	add $t6, $ra, 0
 	jal imprimir_caracter
 	add $ra, $t6, 0
 	addi $t4, $t4, 1
-	bne $t3, $zero, bucle_imprimir_bienvenida
+	bne $t3, $zero, bucle_imprimir
 
 	#jal uartmips_exit
 	jr $ra
@@ -302,10 +281,10 @@ listo:
 	beq $t2, $zero, listo
 	jr $ra
 
-# Esperamos a que el serial nos indique que podemos escribir
+# Esperamos a que el serial nos indique que podemos leer
 esperaentrada:
 	lw $t1, 0x14($t0)	# reg_base + 0x14 es registro status en jz4740
-	andi $t2, $t1, 0x1	# 0x01 es el bit de TEMP
+	andi $t2, $t1, 0x1	# 0x01 es el bit de TEMP para conocer si existe una entrada
 	beq $t2, $zero, esperaentrada
 	jr $ra
 
