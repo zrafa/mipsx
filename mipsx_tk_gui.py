@@ -158,7 +158,7 @@ class MipsxControl(Frame):
 
     def prox_instruccion(self):
 
-		gdb.stdin.write('next\n')
+		gdb.stdin.write('step 1\n')
 		self.mostrar_en(self.paneles.mensajes, "proximo")
 
 		self.estado()
@@ -222,7 +222,7 @@ class MipsxControl(Frame):
 		else:
 			gdb.stdin.write(solicitar_seg_de_datos)
 		gdb.stdin.write('x/50xw main\n')
-		gdb.stdin.write('x/40xw $sp\n')
+		gdb.stdin.write('x/128xw $sp - 128\n')
 		self.mostrar_en(self.paneles.memoria, "memoria")
 	
 
