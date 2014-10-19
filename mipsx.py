@@ -3,10 +3,10 @@
 
 """
 Autor original del ejemplo de una aplicacion Tk: Jan Bodnar
-last modified: December 2010
-website: www.zetcode.com
+last modified: December 2010 website: www.zetcode.com
 
 Modificado y ampliado para ser una GUI de GDB para MIPS. 
+
 (C) 2014 - Rafael Ignacio Zurita <rafa@fi.uncoma.edu.ar>
 
 Lea el archivo README.md para conocer la licencia de este programa.
@@ -42,7 +42,7 @@ class Mipsx(Frame):
 
 
     	def prox_instruccion():
-		p.stdin.write('next\n')
+		p.stdin.write('step 1\n')
 
 		mostrar_en(area4, "proximo")
 
@@ -105,7 +105,7 @@ class Mipsx(Frame):
 		else:
 			p.stdin.write(solicitar_seg_de_datos)
 		p.stdin.write('x/40xw main\n')
-		p.stdin.write('x/40xw $sp\n')
+		p.stdin.write('x/128 $sp - 128\n')
 		mostrar_en(area3, "memoria")
 	
 
