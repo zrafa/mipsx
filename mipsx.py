@@ -194,7 +194,7 @@ class Mipsx(Frame):
 			mostrar_en_depuracion()
 
 
-	PUERTOyPS=str( random.randrange(4000,5000+1) )
+	PUERTOyPS=str( random.randrange(4000,8000+1) )
 	# PUERTOyPS="4567"
 
 
