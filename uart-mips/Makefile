@@ -7,11 +7,13 @@ CFLAGS=-Wall -g
 all:
 	mipsel-linux-as  -g --gstabs -o uartmips.o uartmips.s 
 	mipsel-linux-as  -g --gstabs -o bong.o bong.s 
-	mipsel-linux-gcc -g -c -o init.o init.c 
-	mipsel-linux-gcc  -o uartmips uartmips.o init.o 
-	mipsel-linux-gcc  -o bong bong.o init.o 
+	mipsel-linux-as  -g --gstabs -o hello.o hello.s 
+	mipsel-linux-gcc -g -c -o uartmips_init.o uartmips_init.c 
+	mipsel-linux-gcc  -o uartmips uartmips.o uartmips_init.o 
+	mipsel-linux-gcc  -o bong bong.o uartmips_init.o 
+	mipsel-linux-gcc  -o hello hello.o uartmips_init.o 
 
 
 clean:
-		rm -f uartmips init.o uartmips.o bong bong.o
+		rm -f uartmips uartmips_init.o uartmips.o bong bong.o
 
