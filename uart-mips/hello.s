@@ -33,31 +33,27 @@ main:
 	la $t4, cadena
 
 
+
 imprimir_cadena:
 	lb $t3, ($t4)
-	add $t6, $ra, 0
-	jal imprimir_caracter
-	add $ra, $t6, 0
-	addi $t4, $t4, 1
-	bne $t3, $zero, imprimir_cadena
-	
-	jal uartmips_exit
 
-# Imprimir caracter
-imprimir_caracter:
-	add $t7, $ra, 0
-	jal esperalisto
-	add $ra, $t7, 0
-	sw $t3, 0($t0)
-	jr $ra
-
-
-# Esperamos a que el serial nos indique que podemos escribir
+# Esperamos a que el uart nos indique que podemos escribir
 esperalisto:
 	lw $t1, 0x14($t0)	# reg_base + 0x14 es registro status en jz4740
 	andi $t2, $t1, 0x40	# 0x40 es el bit de TEMP
 	beq $t2, $zero, esperalisto
 	jr $ra
+
+	sw $t3, 0($t0)		# Escribimos el caracter en el registro de transmicion
+
+
+	addi $t4, $t4, 1
+	bne $t3, $zero, imprimir_cadena
+
+	jal uartmips_exit
+
+
+
 
 # retorna al SO
         li      $4, 88

@@ -137,6 +137,24 @@ class Mipsx(Frame):
 		p.stdin.write('disas \n')
 		mostrar_en(area2, "listado")
 
+	def compilarparasie():
+		area4.delete('1.0',END)
+		area4.insert('1.0',"Compilando para la SIE ...\r\n")
+		root.update_idletasks()
+
+		p.stdin.write('detach \n')
+		guardar_archivo_a_compilar()
+		tub = Popen(['mipsx_compilarparasie.sh', self.archivoacompilar, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+		streamdata = tub.communicate()[0]
+		mostrar_en_depuracion()
+
+		if tub.returncode == 0:
+			area4.insert(END, "Compilacion para la SIE OK\n")
+		else:
+			area4.insert(END, "ERROR al compilar y cargar")
+			mostrar_en_depuracion()
+
+
 	def compilarycargar():
 		area4.delete('1.0',END)
 		area4.insert('1.0',"Compilando y Cargando ...\r\n")
@@ -144,7 +162,6 @@ class Mipsx(Frame):
 
 		p.stdin.write('detach \n')
 		guardar_archivo_a_compilar()
-		#tub = Popen(['./compilarycargar.sh', self.archivoactual, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		tub = Popen(['mipsx_compilarycargar.sh', self.archivoacompilar, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 		mostrar_en_depuracion()
@@ -369,6 +386,7 @@ class Mipsx(Frame):
 	menu.add_command(label="Next", command=prox_instruccion)
 	menu.add_command(label="Breakpoint", command=no_hacer_nada)
 	menu.add_command(label="Compilar y Cargar", command=compilarycargar)
+	menu.add_command(label="Compilar para SIE", command=compilarparasie)
 
 	helpmenu = Menu(menu)
 	menu.add_cascade(label="Ayuda", menu=helpmenu)
