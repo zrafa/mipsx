@@ -16,7 +16,7 @@ exec > /tmp/archivotemp${2}.txt
 exec 2>&1
 
 # Copiamos el archivo fuente
-cp ${1} /tmp &&
+# cp ${1} /tmp &&
 
 ARCHIVO=`basename ${1}` 
 
