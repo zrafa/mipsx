@@ -15,6 +15,7 @@ PATH=/usr/local/jlime-2010.1/mipsel/bin/:$PATH
 exec > /tmp/archivotemp${2}.txt
 exec 2>&1
 
+
 # Copiamos el archivo fuente
 # cp ${1} /tmp &&
 
@@ -22,8 +23,9 @@ ARCHIVO=`basename ${1}`
 
 # Ensamblamos y vinculamos
 cd /tmp &&
-mipsel-linux-as  -g --gstabs -o ${ARCHIVO}.o ${ARCHIVO}  &&
-mipsel-linux-gcc  -o ${ARCHIVO}.elf ${ARCHIVO}.o /export/home/extras/mipsx/uartmips_init.o  && echo "Compilacion OK. Ejecutar en SIE el programa ${ARCHIVO}.elf
+mipsel-linux-gnu-as  -g --gstabs -o ${ARCHIVO}.o ${ARCHIVO}  &&
+mipsel-linux-gnu-gcc  -o ${ARCHIVO}.elf ${ARCHIVO}.o /export/home/extras/mipsx/uartmips_init.o  && echo "Compilacion OK. Ejecutar en SIE el programa ${ARCHIVO}.elf
 
 "
+
 
