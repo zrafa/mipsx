@@ -6,18 +6,16 @@ memoria:
 	.ascii "hola mundo"
 
         .text
-        .globl main
-        .globl __start
+        .global main
 
-__start:
 main:
         li      $t1, 1
         li      $t3, 1
         add     $t0, $t1, $t3
 
 # retorna al SO
-        move $a0, $0
-        li      $v0, 4001
+        li      $4, 88
+        li      $2, 4001
         syscall
 
 
