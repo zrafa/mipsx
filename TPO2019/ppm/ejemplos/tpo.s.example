@@ -1,0 +1,6 @@
+
+.globl image_algonegra
+image_algonegra:
+
+	jr $ra
+

@@ -1,0 +1,13 @@
+.globl image_algonegra
+image_algonegra:
+	add $t1, $a0, $zero
+	li $t2, 0
+	li $t3, 80000
+negro:
+	beq $t2, $t3, salir
+		add $t1, $a0, $t2
+		sb $zero, 0($t1)
+		addi $t2, $t2, 1
+		j negro
+salir:
+
