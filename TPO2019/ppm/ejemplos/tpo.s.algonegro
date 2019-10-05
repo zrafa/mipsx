@@ -10,4 +10,5 @@ negro:
 		addi $t2, $t2, 1
 		j negro
 salir:
+	jr $ra
 
