@@ -7,7 +7,7 @@ CC=gcc
 OBJDUMP=mips-linux-gnu-objdump
 IP_MIPS=10.0.15.50
 
-ARCHIVO=`basename ${1}` 
+ARCHIVO=`basename ${1}`
 
 exec > /tmp/archivotemp${2}.txt
 exec 2>&1
@@ -20,9 +20,9 @@ mkdir /tmp/${ARCHIVO}.dir/ &&
 cd /tmp/${ARCHIVO}.dir/
 cp /export/home/extras/mipsx/TPO2019/ppm/* . &&
 cp ${1} tpo.s
-sshpass -p "root" scp -r /tmp/${ARCHIVO}.dir/ root@${IP_MIPS}:/tmp && 
+sshpass -p "root" scp -r /tmp/${ARCHIVO}.dir/ root@${IP_MIPS}:/tmp &&
 
-# ARCHIVO=`basename ${1}` 
+# ARCHIVO=`basename ${1}`
 
 # Ensamblamos y vinculamos
 # El siguiente habría que hacerlo con make
@@ -31,7 +31,7 @@ sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "cd  /tmp/${AR
 
 
 # Copiamos el binario nuevamente a la PC
-sshpass -p "root" scp root@${IP_MIPS}:/tmp/${ARCHIVO}.dir/tpo /tmp/${ARCHIVO}.elf 
+sshpass -p "root" scp root@${IP_MIPS}:/tmp/${ARCHIVO}.dir/tpo /tmp/${ARCHIVO}.elf
 
 # Ejecutamos gdbserver
 # (sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "gdbserver 0.0.0.0:${2} /tmp/${ARCHIVO}.elf " &  )

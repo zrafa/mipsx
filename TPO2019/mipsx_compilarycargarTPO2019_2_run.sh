@@ -7,7 +7,7 @@ CC=gcc
 OBJDUMP=mips-linux-gnu-objdump
 IP_MIPS=10.0.15.50
 
-ARCHIVO=`basename ${1}` 
+ARCHIVO=`basename ${1}`
 
 exec > /tmp/archivotemp${2}.txt
 exec 2>&1
