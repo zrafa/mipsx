@@ -16,6 +16,9 @@ import time
 import sys
 import random
 
+# Para poder usar os._exit
+import os
+
 from subprocess import Popen, PIPE, STDOUT
 
 from Tkinter import *
@@ -82,6 +85,7 @@ class Mipsx(Frame):
 		p.stdin.write(findelinea)
 		p.stdin.write('\r\n')
 		salida(w, findelinea)
+		root.update_idletasks()
 
 	def mostrar_en_depuracion():
 		
@@ -90,6 +94,7 @@ class Mipsx(Frame):
 		#area4.delete('1.0',END)
 		area4.insert(END,contents)
 		file.close()
+		root.update_idletasks()
 
 		
 
@@ -148,39 +153,45 @@ class Mipsx(Frame):
 
 	def compilarTPO2019():
 		area4.delete('1.0',END)
-		area4.insert('1.0',"Compilando TPO2019 ...\r\n")
+		area4.insert('1.0',"\n Compilando TPO2019 ...\r\n")
 		root.update_idletasks()
 
 		p.stdin.write('detach \n')
 		guardar_archivo_a_compilar()
 		tub = Popen(['mipsx_compilarycargarTPO2019.sh', self.archivoacompilar, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
+		sys.stdout.flush()
 		mostrar_en_depuracion()
 
 		if tub.returncode == 0:
-			area4.insert(END, "Compilacion Finalizada \n")
+			area4.insert(END, "\n Compilacion: OK. Ejecutando en MIPS... \n")
+			area4.insert(END, "\n Estoy puede demorar unos segundos...\n")
+			root.update_idletasks()
+			tub = Popen(['mipsx_compilarycargarTPO2019_2_run.sh', self.archivoacompilar, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+			streamdata = tub.communicate()[0]
+			mostrar_en_depuracion()
 		else:
 			area4.insert(END, "\n\nERROR al compilar y cargar\n\n")
 			mostrar_en_depuracion()
 
 
-	def compilarparamalta():
-		area4.delete('1.0',END)
-		area4.insert('1.0',"Compilando para la malta ...\r\n")
-		root.update_idletasks()
-
-		p.stdin.write('detach \n')
-		guardar_archivo_a_compilar()
-		tub = Popen(['mipsx_compilarycargarparamalta.sh', self.archivoacompilar, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-		streamdata = tub.communicate()[0]
-		mostrar_en_depuracion()
-
-		if tub.returncode == 0:
-			area4.insert(END, "Compilacion Finalizada \n")
-		else:
-			area4.insert(END, "\n\nERROR al compilar y cargar\n\n")
-			mostrar_en_depuracion()
-
+#	def compilarparamalta():
+#		area4.delete('1.0',END)
+#		area4.insert('1.0',"Compilando para la malta ...\r\n")
+#		root.update_idletasks()
+#
+#		p.stdin.write('detach \n')
+#		guardar_archivo_a_compilar()
+#		tub = Popen(['mipsx_compilarycargarparamalta.sh', self.archivoacompilar, PUERTOyPS], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+#		streamdata = tub.communicate()[0]
+#		mostrar_en_depuracion()
+#
+#		if tub.returncode == 0:
+#			area4.insert(END, "Compilacion Finalizada \n")
+#		else:
+#			area4.insert(END, "\n\nERROR al compilar y cargar\n\n")
+#			mostrar_en_depuracion()
+#
 
 	def compilarycargar():
 		area4.delete('1.0',END)
@@ -380,6 +391,11 @@ class Mipsx(Frame):
 		return True
 
 	def salir():
+		area4.delete('1.0',END)
+		area4.insert('1.0',"\n Finalizando programa. \r\n")
+		area4.insert(END," Verificando archivos sin guardar... \r\n")
+		root.update_idletasks()
+
 		if archivo_sin_guardar():
 			return
 
@@ -390,14 +406,20 @@ class Mipsx(Frame):
 		tub = Popen(['rm', tmp, tmp2, tmp3, tmp4], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
 
+
 		tmp2 = "/tmp/archivo"+PUERTOyPS+".s.o"
 		ip_mips = "10.0.15.50"
 		tub = Popen(['mipsx_finalizar_gdbserver.sh', ip_mips, PUERTOyPS, tmp, tmp2, tmp3, tmp4], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 		streamdata = tub.communicate()[0]
+
 		# ip_mips = "10.0.15.232"
 		# ip_mips = "192.168.0.71"
 		# killgdbserver = Popen(['sshpass', '-p', clave, 'ssh', '-o', 'StrictHostKeyChecking=no', '-l', 'root', ip_mips, comando], stdout=PIPE, stdin=PIPE, stderr=STDOUT)	
-		quit()
+		# HANGS : quit()
+		# HANGS: exit()
+		p.terminate()
+		p.kill()
+		os._exit(0)
 
 
 
@@ -416,8 +438,8 @@ class Mipsx(Frame):
 	menu.add_command(label="Next", command=prox_instruccion)
 	menu.add_command(label="Breakpoint", command=no_hacer_nada)
 	menu.add_command(label="Compilar y Cargar", command=compilarycargar)
-	menu.add_command(label="Compilar y Ejecutar en Malta", command=compilarparamalta)
-	menu.add_command(label="Compilar y Ejecutar TPO 2019", command=compilarTPO2019)
+#	menu.add_command(label="Compilar y Ejecutar en Malta", command=compilarparamalta)
+	menu.add_command(label="  Compilar y Ejecutar TPO 2019  ", command=compilarTPO2019)
 
 	helpmenu = Menu(menu)
 	menu.add_cascade(label="Ayuda", menu=helpmenu)

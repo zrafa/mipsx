@@ -1,8 +1,6 @@
 #!/bin/bash
 
 RUTA=/usr/bin/
-# AS=mips-linux-gnu-as
-# LD=mips-linux-gnu-ld
 AS=as
 LD=ld
 CC=gcc
@@ -33,15 +31,15 @@ sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "cd  /tmp/${AR
 
 
 # Copiamos el binario nuevamente a la PC
-sshpass -p "root" scp root@${IP_MIPS}:/tmp/${ARCHIVO}.dir/tpo /tmp/${ARCHIVO}.elf &&
+sshpass -p "root" scp root@${IP_MIPS}:/tmp/${ARCHIVO}.dir/tpo /tmp/${ARCHIVO}.elf 
 
 # Ejecutamos gdbserver
 # (sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "gdbserver 0.0.0.0:${2} /tmp/${ARCHIVO}.elf " &  )
-sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "cd /tmp/${ARCHIVO}.dir/ ; cat orig.ppm | ./tpo > dest3.ppm" &&
-sshpass -p "root" scp root@${IP_MIPS}:/tmp/${ARCHIVO}.dir/dest3.ppm /tmp/${ARCHIVO}.ppm &&
-eom /tmp/${ARCHIVO}.ppm &&
+# sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "cd /tmp/${ARCHIVO}.dir/ ; cat orig.ppm | ./tpo > dest3.ppm" &&
+# sshpass -p "root" scp root@${IP_MIPS}:/tmp/${ARCHIVO}.dir/dest3.ppm /tmp/${ARCHIVO}.ppm &&
+# eom /tmp/${ARCHIVO}.ppm &&
 
-sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "rm -rf /tmp/${ARCHIVO}.dir/"
-rm -rf /tmp/${ARCHIVO}.dir
-rm /tmp/${ARCHIVO}.elf
-rm /tmp/${ARCHIVO}.ppm
+# sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "rm -rf /tmp/${ARCHIVO}.dir/"
+# rm -rf /tmp/${ARCHIVO}.dir
+# rm /tmp/${ARCHIVO}.elf
+# rm /tmp/${ARCHIVO}.ppm
