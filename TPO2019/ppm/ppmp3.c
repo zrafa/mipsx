@@ -117,21 +117,29 @@ int image_write(FILE * input, struct Image *image)
     return 0;
 }
 
-int image_negative(struct Image *orig, struct Image *nImage)
+int image_negative(struct Image *image)
 {
     int index;
+    int nSamples;
+    nSamples = image->width * image->height * 3;
+    for (index = 0; index < nSamples; index++) {
+        image->pixel[index] = 255 - image->pixel[index];
+    }
+    return 0;
+}
+
+int image_clone(struct Image *orig, struct Image *nImage)
+{
     int nSamples;
     nSamples = orig->width * orig->height * 3;
     nImage->pixel = malloc(sizeof(nImage->pixel[0]) * nSamples);
     if (nImage->pixel == NULL) {
         nImage->width = 0;
         nImage->height = 0;
-        return -1;
+        return image_BAD_SIZE;
     }
     nImage->width = orig->width;
     nImage->height = orig->height;
-    for (index = 0; index < nSamples; index++) {
-        nImage->pixel[index] = 255 - orig->pixel[index];
-    }
+    memcpy(nImage->pixel, orig->pixel, nSamples);
     return 0;
 }

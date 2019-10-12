@@ -32,7 +32,7 @@ int main(int carg, char **varg)
         fprintf(stderr, "Error en la entrada\n");
     }
 
-    image_negative(&img, &nimg);
+    image_clone(&img, &nimg);
 
     switch (func_num) {
     case 1:
@@ -45,6 +45,7 @@ int main(int carg, char **varg)
         image_filtro_3(nimg.pixel);
         break;
     default:
+        image_negative(&nimg);
         break;
     }
 

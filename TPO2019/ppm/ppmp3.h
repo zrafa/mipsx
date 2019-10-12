@@ -17,7 +17,9 @@
 #include <stdbool.h>
 #endif
 
-#include <math.h>
+#ifndef _STRING_H
+#include <string.h>
+#endif
 
 struct Image {
     int height;
@@ -29,11 +31,13 @@ enum image_err {
     image_OK = 0,
     image_READ_ERROR,
     image_WRONG_FORMAT,
+    image_BAD_SIZE,
     image_UNKOW_ERROR = 0xFFFF
 };
 
 int image_read(FILE * input, struct Image * nImage);
 int image_write(FILE * input, struct Image * image);
-int image_negative(struct Image *orig, struct Image * nImage);
+int image_clone(struct Image *orig, struct Image *nImage);
+int image_negative(struct Image *image);
 
 #endif
