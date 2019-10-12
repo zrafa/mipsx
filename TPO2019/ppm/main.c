@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern int func_num;
-extern void image_func_1(unsigned char *pixel);
-extern void image_func_2(unsigned char *pixel);
-extern void image_func_3(unsigned char *pixel);
+extern int filtro;
+extern void image_filtro_1(unsigned char *pixel);
+extern void image_filtro_2(unsigned char *pixel);
+extern void image_filtro_3(unsigned char *pixel);
 
 int main(int carg, char **varg)
 {
@@ -36,13 +36,13 @@ int main(int carg, char **varg)
 
     switch (func_num) {
     case 1:
-        image_func_1(nimg.pixel);
+        image_filtro_1(nimg.pixel);
         break;
     case 2:
-        image_func_2(nimg.pixel);
+        image_filtro_2(nimg.pixel);
         break;
     case 3:
-        image_func_3(nimg.pixel);
+        image_filtro_3(nimg.pixel);
         break;
     default:
         break;

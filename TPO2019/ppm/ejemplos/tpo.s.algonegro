@@ -1,13 +1,13 @@
-.globl image_func_1
-.globl image_func_2
-.globl image_func_3
-.globl func_num
+.globl image_filtro_1
+.globl image_filtro_2
+.globl image_filtro_3
+.globl filtro
 
-func_num: .word 1
+filtro: .word 1
 
-image_func_1:
-image_func_2:
-image_func_3:
+image_filtro_1:
+image_filtro_2:
+image_filtro_3:
 
 	add $t1, $a0, $zero
 	li $t2, 0
