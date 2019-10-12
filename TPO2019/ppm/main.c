@@ -4,7 +4,9 @@
 #include <stdlib.h>
 
 extern int func_num;
-extern void image_algonegra(unsigned char *pixel);
+extern void image_func_1(unsigned char *pixel);
+extern void image_func_2(unsigned char *pixel);
+extern void image_func_3(unsigned char *pixel);
 
 int main(int carg, char **varg)
 {
@@ -30,18 +32,20 @@ int main(int carg, char **varg)
         fprintf(stderr, "Error en la entrada\n");
     }
 
+    image_negative(&img, &nimg);
+
     switch (func_num) {
     case 1:
-        image_fun_1(nimg.pixel);
+        image_func_1(nimg.pixel);
         break;
     case 2:
-        image_fun_2(nimg.pixel);
+        image_func_2(nimg.pixel);
         break;
-    case 1:
-        image_fun_3(nimg.pixel);
+    case 3:
+        image_func_3(nimg.pixel);
         break;
     default:
-        image_negative(&img, &nimg);
+        break;
     }
 
     image_write(salida, &nimg);
