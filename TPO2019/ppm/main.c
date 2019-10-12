@@ -34,7 +34,7 @@ int main(int carg, char **varg)
 
     image_clone(&img, &nimg);
 
-    switch (func_num) {
+    switch (filtro) {
     case 1:
         image_filtro_1(nimg.pixel);
         break;
