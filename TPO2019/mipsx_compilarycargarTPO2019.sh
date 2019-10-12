@@ -18,7 +18,7 @@ sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "kill `ps auxw
 # Copiamos el archivo fuente
 mkdir /tmp/${ARCHIVO}.dir/ &&
 cd /tmp/${ARCHIVO}.dir/
-cp /export/home/extras/mipsx/TPO2019/ppm/* . &&
+cp -r /export/home/extras/mipsx/TPO2019/ppm/* . &&
 cp ${1} tpo.s
 sshpass -p "root" scp -r /tmp/${ARCHIVO}.dir/ root@${IP_MIPS}:/tmp &&
 
