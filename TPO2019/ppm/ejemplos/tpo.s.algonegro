@@ -1,5 +1,14 @@
-.globl image_algonegra
-image_algonegra:
+.globl image_func_1
+.globl image_func_2
+.globl image_func_3
+.globl func_num
+
+func_num: .word 1
+
+image_func_1:
+image_func_2:
+image_func_3:
+
 	add $t1, $a0, $zero
 	li $t2, 0
 	li $t3, 80000

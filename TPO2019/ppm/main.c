@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern void image_algonegra(unsigned char * pixel); 
+extern int func_num;
+extern void image_algonegra(unsigned char *pixel);
 
 int main(int carg, char **varg)
 {
@@ -23,14 +24,26 @@ int main(int carg, char **varg)
         if (entrada != stdin)
             fclose(entrada);
         return -1;
-    } 
+    }
 
     if (image_read(entrada, &img)) {
         fprintf(stderr, "Error en la entrada\n");
     }
 
-    image_negative(&img, &nimg);
-    image_algonegra(nimg.pixel);
+    switch (func_num) {
+    case 1:
+        image_fun_1(nimg.pixel);
+        break;
+    case 2:
+        image_fun_2(nimg.pixel);
+        break;
+    case 1:
+        image_fun_3(nimg.pixel);
+        break;
+    default:
+        image_negative(&img, &nimg);
+    }
+
     image_write(salida, &nimg);
 
     if (entrada != stdin)

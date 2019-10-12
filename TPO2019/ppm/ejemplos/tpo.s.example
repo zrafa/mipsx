@@ -1,6 +1,14 @@
+.globl image_func_1
+.globl image_func_2
+.globl image_func_3
+.globl func_num
 
-.globl image_algonegra
-image_algonegra:
+func_num: .word 1
+
+
+image_func_1:
+image_func_2:
+image_func_3:
 
 	jr $ra
 
