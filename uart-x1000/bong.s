@@ -20,6 +20,7 @@ pelota:		.word 0
 mover_pelota:	.word 1
 
 bienvenida:	.asciiz "Hola mundo en MIPS - Placa electronica SIE XBurst CPU MIPS32v2"
+test:	.asciiz "PRUEBA  "
 tecla:		.word 0
 
 limpiar_pantalla:	.byte 0x1B, 0x5B, 0x32, 0x4A, 0x00
@@ -132,6 +133,9 @@ analizar_tecla:
 
 	jr $ra
 tecla_a:
+	la $t4, test
+	jal bucle_imprimir
+
 	lw $t1, paletas
 	beq $t1, $zero, salir_analizar_tecla
 	sw $t1, paletas+4
