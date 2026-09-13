@@ -269,14 +269,19 @@ class Mipsx(ttk.Frame):
             ejecutable = self.archivoacompilar+".elf"
             ejecutable = ntpath.basename(ejecutable)
 
+            p.stdin.write('disconnect \n')
+            p.stdin.write('remove-inferiors 1\n')
+            p.stdin.flush()
             # Nos conectamos al gdbserver
             comando='target remote '+self.ip_mips+':'+self.PUERTOyPS+'\n'
             p.stdin.write(comando)
+            p.stdin.flush()
 
             # gdbfile = 'set remote exec-file /tmp/'+ejecutable+'\n'
             # p.stdin.write(gdbfile)
             # Respondemos "y"es a recargar                  
             p.stdin.write('y \n')
+            p.stdin.flush()
 
             # Abrimos con gdb el archivo ejecutable
             gdbfile = 'file /tmp/'+ejecutable+'\n'
@@ -289,7 +294,7 @@ class Mipsx(ttk.Frame):
             p.stdin.write('y \n')
             p.stdin.write('break main\n')
             # p.stdin.write('run\n')
-            p.stdin.write('continue\n')
+            # p.stdin.write('continue\n')
             print("2")
             self.ejecucion = True
 
