@@ -18,7 +18,6 @@ exec 2>&1
 # Matamos el gdbserver remoto
 ##  sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "killall gdbserver "
 sshpass -p "alumno" ssh  -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 -o StrictHostKeyChecking=no alumno@${IP_MIPS} "kill `ps auxw | grep ${2} | grep gdbserver | awk '{print $2}'` 2>&1 | grep -v kill"
-sleep 1
 
 # -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 
 # -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 
@@ -40,5 +39,4 @@ sshpass -p "alumno" scp -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithm
 
 # Ejecutamos gdbserver
 (sshpass -p "alumno" ssh  -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 -o StrictHostKeyChecking=no alumno@${IP_MIPS} "gdbserver 0.0.0.0:${2} /tmp/${ARCHIVO}.elf " &  )
-sleep 1
 

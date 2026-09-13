@@ -272,11 +272,9 @@ class Mipsx(ttk.Frame):
         p.stdin.write('info address memoria\n')
         p.stdin.write('infomemoria\n')
         p.stdin.flush()
-        print("2.0", flush=True)
         ## a = p.stdout.readline()
         a = "a"
         solicitar_seg_de_datos = ""
-        print("2.1")
         while "infomemoria" not in a:
             print("a : " + a)
             if "Symbol " in a:
@@ -285,7 +283,6 @@ class Mipsx(ttk.Frame):
                 solicitar_seg_de_datos = "x/40xw " + a + "\n"
             a = p.stdout.readline()
 
-        print("2.2")
         if solicitar_seg_de_datos == "":
             p.stdin.write('x/40xw $pc\n')
             p.stdin.flush()
@@ -330,6 +327,12 @@ class Mipsx(ttk.Frame):
             f.write(codigo)
             # f.write("\n") 
 
+        #p.stdin.write('kill \n')
+        #p.stdin.flush()
+        p.stdin.write('detach \n')
+        p.stdin.flush()
+        #p.stdin.write('disconnect \n')
+        #p.stdin.flush()
         # comando = ["mipsx_compilarycargar.sh", archivo_tmp, self.PUERTOyPS]
         tub = Popen(['mipsx_p3_compilarycargar.sh', archivo_tmp, self.PUERTOyPS, self.ip_mips], stdout=PIPE, stdin=PIPE, stderr=STDOUT, pipesize=1024*1024,)
         streamdata = tub.communicate()[0]
@@ -362,24 +365,19 @@ class Mipsx(ttk.Frame):
             p.stdin.write(gdbfile)
             # Respondemos "y"es a recargar                  
             p.stdin.write('y \n')
-            print("1")
                 
             p.stdin.write('delete \n')
             p.stdin.write('y \n')
             p.stdin.write('break main\n')
             # p.stdin.write('run\n')
             # p.stdin.write('continue\n')
-            print("2")
             self.ejecucion = True
 
             self.mostrar_en(self.area4,"estado")
             self.area4.see(tk.END)
             self.memoria()
-            print("3")
             self.registros()
-            print("4")
             self.listado()
-            print("5")
         else:
             self.area4.insert(tk.END, "\n\nERROR al compilar y cargar\n\n")
             self.mostrar_en_depuracion()
