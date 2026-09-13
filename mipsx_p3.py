@@ -122,22 +122,39 @@ class Mipsx(ttk.Frame):
             self.archivoactual = file.name
             print(self.archivoactual)
 
-    def ejecutar(self):
-        if not self.ejecucion:
-            self.area4.insert(tk.END, "\nNo hay ejecución activa.\n")
-            return
-        self.area4.insert(tk.END, "\nEjecutando...\n")
-        self.parent.update_idletasks()
-        while self.ejecucion:
-            self.prox_instruccion()
-            time.sleep(0.5)
+    def estado(self):                                                                                                                                  
+                p.stdin.write('info frame\n')                                                                                                          
+                p.stdin.flush()
+                self.mostrar_en(self.area4, "estado")                                                                                                            
+                file = open("/tmp/archivotemp"+self.PUERTOyPS+".txt")                                                                                       
+                contents = file.readline()                                                                                                             
+                while not "Remote" in contents:                                                                                                        
+                        # print contents
+                        self.area4.insert(tk.END,contents)
+                        contents = file.readline()
+                                                                                                                                                       
+                self.area4.insert(tk.END,"----------------------------------------\nSalida Estandar : \n\n")
+                                                                                                                                                       
+                contents = file.read()
+                file.close()
+                self.area4.insert(tk.END,contents)
+                self.area4.see(tk.END)
 
     def prox_instruccion(self):
-        if not self.ejecucion:
-            self.area4.insert(tk.END, "\nLa ejecución no está activa.\n")
-            return
-        self.area4.insert(tk.END, "\nPaso a la siguiente instrucción.\n")
-        self.area4.see(tk.END)
+                p.stdin.write('step 1\n')
+                p.stdin.flush()
+                                                                                                                                                       
+                self.mostrar_en(self.area4, "proximo")
+                                                                                                                                                       
+                self.estado()
+                if self.ejecucion:
+                        self.memoria()
+                        self.registros()
+                        self.listado()
+                                                                                                                                                       
+    def ejecutar(self):
+                while self.ejecucion:
+                        self.prox_instruccion()     
 
     def salida(self, w, findelinea):
         w.delete("1.0", tk.END)
@@ -255,20 +272,17 @@ class Mipsx(ttk.Frame):
             # Nos conectamos al gdbserver
             comando='target remote '+self.ip_mips+':'+self.PUERTOyPS+'\n'
             p.stdin.write(comando)
-            ## self.leer_gdb()
 
             # gdbfile = 'set remote exec-file /tmp/'+ejecutable+'\n'
             # p.stdin.write(gdbfile)
             # Respondemos "y"es a recargar                  
             p.stdin.write('y \n')
-            ## self.leer_gdb()
 
             # Abrimos con gdb el archivo ejecutable
             gdbfile = 'file /tmp/'+ejecutable+'\n'
             p.stdin.write(gdbfile)
             # Respondemos "y"es a recargar                  
             p.stdin.write('y \n')
-            ## self.leer_gdb()
             print("1")
                 
             p.stdin.write('delete \n')
@@ -276,20 +290,16 @@ class Mipsx(ttk.Frame):
             p.stdin.write('break main\n')
             # p.stdin.write('run\n')
             p.stdin.write('continue\n')
-            ## self.leer_gdb()
             print("2")
             self.ejecucion = True
 
             self.mostrar_en(self.area4,"estado")
             self.area4.see(tk.END)
             self.memoria()
-            ##self.leer_gdb()
             print("3")
             self.registros()
-            ##self.leer_gdb()
             print("4")
             self.listado()
-            ##self.leer_gdb()
             print("5")
         else:
             self.area4.insert(tk.END, "\n\nERROR al compilar y cargar\n\n")
