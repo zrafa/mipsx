@@ -19,6 +19,43 @@ import tkinter.messagebox as messagebox
 from tkinter.scrolledtext import ScrolledText
 from subprocess import Popen, PIPE, STDOUT
 
+class CustomText(tk.Text):
+    def __init__(self, *args, **kwargs):
+        tk.Text.__init__(self, *args, **kwargs)
+        self._orig = self._w + "_orig"
+        self.tk.call("rename", self._w, self._orig)
+        self.tk.createcommand(self._w, self._proxy)
+
+    def _proxy(self, *args):
+        cmd = (self._orig,) + args
+        result = self.tk.call(cmd)
+        if (args[0] in ("insert", "replace", "delete") or
+                args[0:3] == ("mark", "set", "insert") or
+                args[0:2] == ("xview", "moveto") or
+                args[0:2] == ("xview", "scroll") or
+                args[0:2] == ("yview", "moveto") or
+                args[0:2] == ("yview", "scroll")):
+            self.event_generate("<<Change>>", when="tail")
+        return result
+
+
+class TextLineNumbers(tk.Canvas):
+    def __init__(self, master, text_widget, **kwargs):
+        tk.Canvas.__init__(self, master, **kwargs)
+        self.text_widget = text_widget
+
+    def redraw(self, *args):
+        self.delete("all")
+        i = self.text_widget.index("@0,0")
+        while True:
+            dline = self.text_widget.dlineinfo(i)
+            if dline is None:
+                break
+            y = dline[1]
+            linenum = str(i).split(".")[0]
+            self.create_text(2, y, anchor="nw", text=linenum, font=("Courier New", 10))
+            i = self.text_widget.index(f"{i}+1line")
+
 class Mipsx(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -59,8 +96,33 @@ class Mipsx(ttk.Frame):
         self.area4.grid(row=14, column=0, rowspan=5, padx=1, sticky="nsew")
 
         tk.Label(self, text="Editor del Programa").grid(row=1,column=0, sticky=tk.W, pady=4, padx=5)
-        self.area5 = ScrolledText(self, height=20, width=60)
-        self.area5.grid(row=2, column=0, rowspan=10, padx=1, sticky="nsew")
+
+
+        # Creamos el area5
+        #self.area5 = ScrolledText(self, height=20, width=60)
+        #self.area5.grid(row=2, column=0, rowspan=10, padx=1, sticky="nsew")
+
+        editor_frame = tk.Frame(self)
+        editor_frame.grid(row=2, column=0, rowspan=10, padx=1, sticky="nsew")
+
+        vsb = tk.Scrollbar(editor_frame, orient="vertical")
+        self.area5 = CustomText(editor_frame, height=20, width=60, wrap="none",
+                         yscrollcommand=vsb.set, font=("Courier New", 10))
+        vsb.config(command=self.area5.yview)
+
+        self.linenumbers = TextLineNumbers(editor_frame, self.area5, width=35,
+                                    background="#eeeeee", highlightthickness=0)
+        self.area5.bind("<<Change>>", self.linenumbers.redraw)
+        self.area5.bind("<Configure>", self.linenumbers.redraw)
+
+        self.linenumbers.pack(side="left", fill="y")
+        self.area5.pack(side="left", fill="both", expand=True)
+        vsb.pack(side="right", fill="y")
+        self.linenumbers.redraw()
+
+        # FIN de Creamos el area5
+
+
 
         menu = tk.Menu(self.parent)
         self.parent.config(menu=menu)
@@ -72,11 +134,20 @@ class Mipsx(ttk.Frame):
         filemenu.add_separator()
         filemenu.add_command(label="Salir", command=self.salir)
 
-        menu.add_command(label="Run", command=self.ejecutar)
-        menu.add_command(label="Next", command=self.prox_instruccion)
-        menu.add_command(label="Breakpoint", command=self.no_hacer_nada)
-        menu.add_command(label="Compilar y Cargar", command=self.compilarycargar)
-        menu.add_command(label="  Compilar y Ejecutar TPO 2019  ", command=self.compilarTPO2019)
+        toolbar = tk.Frame(self)
+        toolbar.grid(row=0, column=0, columnspan=3, sticky="ew", pady=(2, 4))
+
+        ttk.Button(toolbar, text="Run", command=self.ejecutar).pack(side=tk.LEFT, padx=2)
+        ttk.Button(toolbar, text="Next", command=self.prox_instruccion).pack(side=tk.LEFT, padx=2)
+        ttk.Button(toolbar, text="Breakpoint", command=self.no_hacer_nada).pack(side=tk.LEFT, padx=2)
+        ttk.Button(toolbar, text="Compilar y Cargar", command=self.compilarycargar).pack(side=tk.LEFT, padx=2)
+        # ttk.Button(toolbar, text="Compilar y Ejecutar TPO 2019", command=self.compilarTPO2019).pack(side=tk.LEFT, padx=2)
+
+        # menu.add_command(label="Run", command=self.ejecutar)
+        # menu.add_command(label="Next", command=self.prox_instruccion)
+        # menu.add_command(label="Breakpoint", command=self.no_hacer_nada)
+        # menu.add_command(label="Compilar y Cargar", command=self.compilarycargar)
+        # menu.add_command(label="  Compilar y Ejecutar TPO 2019  ", command=self.compilarTPO2019)
 
         helpmenu = tk.Menu(menu)
         menu.add_cascade(label="Ayuda", menu=helpmenu)
@@ -254,8 +325,10 @@ class Mipsx(ttk.Frame):
 
         archivo_tmp = f"/tmp/archivo{self.PUERTOyPS}.s"
         with open(archivo_tmp, "w", encoding="utf-8") as f:
-            codigo = self.area5.get('1.0', tk.END).strip()
+            #codigo = self.area5.get('1.0', tk.END).strip()
+            codigo = self.area5.get('1.0', tk.END).strip() + "\n"
             f.write(codigo)
+            # f.write("\n") 
 
         # comando = ["mipsx_compilarycargar.sh", archivo_tmp, self.PUERTOyPS]
         tub = Popen(['mipsx_p3_compilarycargar.sh', archivo_tmp, self.PUERTOyPS, self.ip_mips], stdout=PIPE, stdin=PIPE, stderr=STDOUT, pipesize=1024*1024,)
