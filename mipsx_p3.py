@@ -258,7 +258,7 @@ class Mipsx(ttk.Frame):
             f.write(codigo)
 
         # comando = ["mipsx_compilarycargar.sh", archivo_tmp, self.PUERTOyPS]
-        tub = Popen(['mipsx_p3_compilarycargar.sh', self.archivoacompilar, self.PUERTOyPS, self.ip_mips], stdout=PIPE, stdin=PIPE, stderr=STDOUT, pipesize=1024*1024,)
+        tub = Popen(['mipsx_p3_compilarycargar.sh', archivo_tmp, self.PUERTOyPS, self.ip_mips], stdout=PIPE, stdin=PIPE, stderr=STDOUT, pipesize=1024*1024,)
         streamdata = tub.communicate()[0]
         self.mostrar_en_depuracion()
 
@@ -266,7 +266,8 @@ class Mipsx(ttk.Frame):
             self.area4.insert(tk.END, "Compilacion y carga : OK\n")
 
 
-            ejecutable = self.archivoacompilar+".elf"
+            # ejecutable = self.archivoacompilar+".elf"
+            ejecutable = archivo_tmp+".elf"
             ejecutable = ntpath.basename(ejecutable)
 
             p.stdin.write('disconnect \n')
