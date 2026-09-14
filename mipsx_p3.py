@@ -411,7 +411,28 @@ class Mipsx(ttk.Frame):
         self.ejecucion = (proceso.returncode == 0)
 
     def about_command(self):
-        messagebox.showinfo("Acerca de", "MIPSX - GUI for gdb multiarch\n\nEntorno de desarrollo en lenguaje assembler arquitectura MIPS\nEste programa ensambla, genera el programa ejecutable y lo ejecuta en modo debug en una máquina MIPS real\n\nFacultad de Informática\nUniversidad Nacional del Comahue")
+        texto = ("MIPSX - GUI for gdb multiarch\n\n"
+             "Entorno de desarrollo en lenguaje ensamblador MIPS\n"
+             "Este programa ensambla, genera el programa ejecutable y lo ejecuta "
+             "en modo debug con gdb en una máquina con ISA MIPS\n\n"
+             "/*\n * Copyright (C) 2014-2026 Rafael Ignacio Zurita <rafa@fi.uncoma.edu.ar>\n"
+             " *\n"
+             " *   mipsx and examples are free software; you can redistribute it and/or modify it\n"
+             " *   under the terms of the GNU General Public License as published by\n"
+             " *   the Free Software Foundation; either version 2 of the License, or\n"
+             " *   (at your option) any later version. Check COPYING file.\n */")
+        win = tk.Toplevel(self)
+        win.title("Acerca de")
+        tk.Label(win, text=texto, justify="left", wraplength=560,
+             padx=20, pady=20).pack()
+        tk.Button(win, text="Cerrar", command=win.destroy).pack(pady=(0,10))
+        win.update_idletasks()
+        x = self.winfo_rootx() + (self.winfo_width()  - win.winfo_width())  // 2
+        y = self.winfo_rooty() + (self.winfo_height() - win.winfo_height()) // 2
+        win.geometry(f"+{x}+{y}")
+
+#    def about_command(self):
+#        messagebox.showinfo("Acerca de", "MIPSX - GUI for gdb multiarch\n\nEntorno de desarrollo en lenguaje ensamblador MIPS\nEste programa ensambla, genera el programa ejecutable y lo ejecuta en modo debug con gdb en una máquina con ISA MIPS \n\n * Copyright (C) 2014-2026 Rafael Ignacio Zurita <rafa@fi.uncoma.edu.ar>\n *\n *   mipsx and examples are free software; you can redistribute it and/or modify\n *   it under the terms of the GNU General Public License as published by\n *   the Free Software Foundation; either version 2 of the License, or\n *   (at your option) any later version. Check COPYING file.")
 
 
 def main():
