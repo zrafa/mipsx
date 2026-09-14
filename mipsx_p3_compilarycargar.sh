@@ -33,6 +33,8 @@ ARCHIVO=`basename ${1}`
 # sshpass -p "root" ssh -o StrictHostKeyChecking=no root@${IP_MIPS} "cd /tmp/ && ${AS} -g --gstabs ${ARCHIVO} -o ${ARCHIVO}.o && ${LD} ${ARCHIVO}.o -o ${ARCHIVO}.elf " &&
 sshpass -p "alumno" ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1  -o StrictHostKeyChecking=no alumno@${IP_MIPS} "cd /tmp/ && ${AS} -g --gstabs ${ARCHIVO} -o ${ARCHIVO}.o && ${LD} ${ARCHIVO}.o -o ${ARCHIVO}.elf " &&
 
+# Obtenemos INFO de la maquina remota
+# sshpass -p "alumno" ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 -o StrictHostKeyChecking=no alumno@${IP_MIPS} "echo \"CPU: \$(grep -m1 -E 'model name|Processor|cpu model|system type|Hardware' /proc/cpuinfo | cut -d: -f2 | sed 's/^ *//'). Linux_\$(uname -r). \$( cat /proc/meminfo  |grep Mem) \"" &&
 
 # Copiamos el binario nuevamente a la PC
 sshpass -p "alumno" scp -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 alumno@${IP_MIPS}:/tmp/${ARCHIVO}.elf /tmp/ &&

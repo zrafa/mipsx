@@ -10,6 +10,7 @@ Facultad de Informática - Universidad Nacional del Comahue
 import time
 import sys
 import random
+import re
 import os
 import ntpath
 import tkinter as tk
@@ -201,6 +202,8 @@ class Mipsx(ttk.Frame):
                 contents = file.readline()                                                                                                             
                 while not "Remote" in contents:                                                                                                        
                         # print contents
+                        # if not "CPU" in contents:
+                        #     self.area4.insert(tk.END,contents)
                         self.area4.insert(tk.END,contents)
                         contents = file.readline()
                                                                                                                                                        
@@ -228,6 +231,10 @@ class Mipsx(ttk.Frame):
                         self.prox_instruccion()     
 
     def salida(self, w, findelinea):
+        # nos quedamos con la linea que dice CPU
+        lineas = w.get("1.0", "end-1c").splitlines()
+        #cpu = [l for l in lineas if "CPU" in l]
+
         w.delete("1.0", tk.END)
                                 
         a = p.stdout.readline()
@@ -237,6 +244,7 @@ class Mipsx(ttk.Frame):
                if "No stack" in a:
                     self.ejecucion = False
                     w.insert(tk.END,'\n\nEjecucion FINALIZADA\n\n')
+                    return
 
                a = a.replace('(gdb) ', '')                             
 
@@ -244,8 +252,17 @@ class Mipsx(ttk.Frame):
                if not "help" in a:
                     if not "http" in a:
                        if "Breakpoint" in a:
+                           # w.delete("1.0", tk.END)
+                           # dejamos sólo la linea que dice RAM
+
                            w.delete("1.0", tk.END)
+                           #if cpu:
+                           #    cpu[0] = re.sub(r'\s+', ' ', cpu[0])
+                           #    w.insert("1.0", cpu[0] + "\n")
+
                            w.insert(tk.END,'\n\nENSAMBLADO (compilacion) OK. Programa cargado.\n\n')
+                       #if not "CPU" in a:
+                       #    w.insert(tk.END,a)         
                        w.insert(tk.END,a)         
                a = p.stdout.readline()                 
         
