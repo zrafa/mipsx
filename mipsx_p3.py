@@ -68,6 +68,17 @@ class Mipsx(ttk.Frame):
         self.archivotemp = f"/tmp/archivotemp{self.PUERTOyPS}.txt"
         self.ip_mips = "10.0.2.50"
 
+	# RAFA
+        # PUERTOyPS=str( random.randrange(4000,8000+1) )
+        # IP_MIPS="10.0.2.51"
+        #while IP_MIPS == "10.0.2.51":
+        #        IP_MIPS="10.0.2.5"+str(random.randrange(0,5+1))
+        #print(IP_MIPS,PUERTOyPS)
+        self.ip_mips = "10.0.2.51"
+        while self.ip_mips == "10.0.2.51":
+                self.ip_mips ="10.0.2.5"+str(random.randrange(0,5+1))
+        print(self.ip_mips, self.PUERTOyPS)
+
         self.parent.title("Mipsx - GUI for gdb multiarch")
         self.style = ttk.Style()
         self.style.theme_use("default")
@@ -78,7 +89,7 @@ class Mipsx(ttk.Frame):
         for i in range(20):
             self.rowconfigure(i, weight=1)
 
-        tk.Label(self, text="Registros                                      GDB en MIPS - MR3020").grid(row=1,column=2, sticky=tk.W, pady=4, padx=5)
+        tk.Label(self, text="CPU (Registros)                                      GDB en MIPS").grid(row=1,column=2, sticky=tk.W, pady=4, padx=5)
         
         self.area1 = tk.Text(self, height=12, width=80)
         self.area1.grid(row=2, column=2, rowspan=5, sticky="nsew")
@@ -165,7 +176,7 @@ class Mipsx(ttk.Frame):
         print("nada por hacer")
 
     def salir(self):
-        if messagebox.askokcancel("Quit", "Do you really want to quit?"):
+        if messagebox.askokcancel("Salir", "Desea finalizar el programa?"):
             self.parent.destroy()
 
     def abrir_en_editor(self, archivo):
@@ -244,7 +255,6 @@ class Mipsx(ttk.Frame):
                if "No stack" in a:
                     self.ejecucion = False
                     w.insert(tk.END,'\n\nEjecucion FINALIZADA\n\n')
-                    return
 
                a = a.replace('(gdb) ', '')                             
 
