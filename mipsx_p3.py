@@ -270,7 +270,7 @@ class Mipsx(ttk.Frame):
                            #    cpu[0] = re.sub(r'\s+', ' ', cpu[0])
                            #    w.insert("1.0", cpu[0] + "\n")
 
-                           w.insert(tk.END,'\n\nENSAMBLADO (compilacion) OK. Programa cargado.\n\n')
+                           w.insert(tk.END,'\n\n ENSAMBLADO (compilacion) OK. Programa cargado.\n\n')
                        #if not "CPU" in a:
                        #    w.insert(tk.END,a)         
                        w.insert(tk.END,a)         
@@ -344,7 +344,7 @@ class Mipsx(ttk.Frame):
 
     def compilarycargar(self):
         self.area4.delete('1.0', tk.END)
-        self.area4.insert('1.0', "Compilando y Cargando ...\n")
+        self.area4.insert('1.0', "\n Compilando y Cargando ... (puede demorar unos instantes)\n")
         self.parent.update_idletasks()
 
         archivo_tmp = f"/tmp/archivo{self.PUERTOyPS}.s"
@@ -440,8 +440,8 @@ class Mipsx(ttk.Frame):
     def about_command(self):
         texto = ("MIPSX - GUI for gdb multiarch\n\n"
              "Entorno de desarrollo en lenguaje ensamblador MIPS\n"
-             "Este programa ensambla, genera el programa ejecutable y lo ejecuta "
-             "en modo debug con gdb en una máquina con ISA MIPS\n\n"
+             "Este programa ensambla, genera el programa ejecutable, y lo ejecuta "
+             "en modo debug (con GNU gdb) en una máquina con ISA MIPS\n\n"
              "/*\n * Copyright (C) 2014-2026 Rafael Ignacio Zurita <rafa@fi.uncoma.edu.ar>\n"
              " *\n"
              " *   mipsx and examples are free software; you can redistribute it and/or modify it\n"
